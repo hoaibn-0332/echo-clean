@@ -56,8 +56,8 @@ func (ac *AuthorCreate) SetNillableUpdatedAt(t *time.Time) *AuthorCreate {
 }
 
 // SetID sets the "id" field.
-func (ac *AuthorCreate) SetID(u uint64) *AuthorCreate {
-	ac.mutation.SetID(u)
+func (ac *AuthorCreate) SetID(i int64) *AuthorCreate {
+	ac.mutation.SetID(i)
 	return ac
 }
 
@@ -153,7 +153,7 @@ func (ac *AuthorCreate) sqlSave(ctx context.Context) (*Author, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint64(id)
+		_node.ID = int64(id)
 	}
 	ac.mutation.id = &_node.ID
 	ac.mutation.done = true
@@ -163,7 +163,7 @@ func (ac *AuthorCreate) sqlSave(ctx context.Context) (*Author, error) {
 func (ac *AuthorCreate) createSpec() (*Author, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Author{config: ac.config}
-		_spec = sqlgraph.NewCreateSpec(author.Table, sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64))
+		_spec = sqlgraph.NewCreateSpec(author.Table, sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64))
 	)
 	if id, ok := ac.mutation.ID(); ok {
 		_node.ID = id
@@ -247,7 +247,7 @@ func (acb *AuthorCreateBulk) Save(ctx context.Context) ([]*Author, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint64(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

@@ -107,8 +107,8 @@ func (aq *AuthorQuery) FirstX(ctx context.Context) *Author {
 
 // FirstID returns the first Author ID from the query.
 // Returns a *NotFoundError when no Author ID was found.
-func (aq *AuthorQuery) FirstID(ctx context.Context) (id uint64, err error) {
-	var ids []uint64
+func (aq *AuthorQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = aq.Limit(1).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -120,7 +120,7 @@ func (aq *AuthorQuery) FirstID(ctx context.Context) (id uint64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aq *AuthorQuery) FirstIDX(ctx context.Context) uint64 {
+func (aq *AuthorQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := aq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -158,8 +158,8 @@ func (aq *AuthorQuery) OnlyX(ctx context.Context) *Author {
 // OnlyID is like Only, but returns the only Author ID in the query.
 // Returns a *NotSingularError when more than one Author ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aq *AuthorQuery) OnlyID(ctx context.Context) (id uint64, err error) {
-	var ids []uint64
+func (aq *AuthorQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = aq.Limit(2).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -175,7 +175,7 @@ func (aq *AuthorQuery) OnlyID(ctx context.Context) (id uint64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aq *AuthorQuery) OnlyIDX(ctx context.Context) uint64 {
+func (aq *AuthorQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := aq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -203,7 +203,7 @@ func (aq *AuthorQuery) AllX(ctx context.Context) []*Author {
 }
 
 // IDs executes the query and returns a list of Author IDs.
-func (aq *AuthorQuery) IDs(ctx context.Context) (ids []uint64, err error) {
+func (aq *AuthorQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if aq.ctx.Unique == nil && aq.path != nil {
 		aq.Unique(true)
 	}
@@ -215,7 +215,7 @@ func (aq *AuthorQuery) IDs(ctx context.Context) (ids []uint64, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aq *AuthorQuery) IDsX(ctx context.Context) []uint64 {
+func (aq *AuthorQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := aq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -405,7 +405,7 @@ func (aq *AuthorQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Autho
 
 func (aq *AuthorQuery) loadArticle(ctx context.Context, query *ArticleQuery, nodes []*Author, init func(*Author), assign func(*Author, *Article)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[uint64]*Author)
+	nodeids := make(map[int64]*Author)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -445,7 +445,7 @@ func (aq *AuthorQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (aq *AuthorQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(author.Table, author.Columns, sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64))
+	_spec := sqlgraph.NewQuerySpec(author.Table, author.Columns, sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64))
 	_spec.From = aq.sql
 	if unique := aq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

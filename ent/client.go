@@ -418,7 +418,7 @@ func (c *AuthorClient) UpdateOne(a *Author) *AuthorUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AuthorClient) UpdateOneID(id uint64) *AuthorUpdateOne {
+func (c *AuthorClient) UpdateOneID(id int64) *AuthorUpdateOne {
 	mutation := newAuthorMutation(c.config, OpUpdateOne, withAuthorID(id))
 	return &AuthorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -435,7 +435,7 @@ func (c *AuthorClient) DeleteOne(a *Author) *AuthorDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AuthorClient) DeleteOneID(id uint64) *AuthorDeleteOne {
+func (c *AuthorClient) DeleteOneID(id int64) *AuthorDeleteOne {
 	builder := c.Delete().Where(author.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -452,12 +452,12 @@ func (c *AuthorClient) Query() *AuthorQuery {
 }
 
 // Get returns a Author entity by its id.
-func (c *AuthorClient) Get(ctx context.Context, id uint64) (*Author, error) {
+func (c *AuthorClient) Get(ctx context.Context, id int64) (*Author, error) {
 	return c.Query().Where(author.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AuthorClient) GetX(ctx context.Context, id uint64) *Author {
+func (c *AuthorClient) GetX(ctx context.Context, id int64) *Author {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

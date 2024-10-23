@@ -38,7 +38,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   author.Table,
 			Columns: author.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: author.FieldID,
 			},
 		},
@@ -191,8 +191,8 @@ func (f *AuthorFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql uint64 predicate on the id field.
-func (f *AuthorFilter) WhereID(p entql.Uint64P) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *AuthorFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(author.FieldID))
 }
 

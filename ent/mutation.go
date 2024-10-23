@@ -40,7 +40,7 @@ type ArticleMutation struct {
 	created_at    *time.Time
 	updated_at    *time.Time
 	clearedFields map[string]struct{}
-	author        *uint64
+	author        *int64
 	clearedauthor bool
 	done          bool
 	oldValue      func(context.Context) (*Article, error)
@@ -296,7 +296,7 @@ func (m *ArticleMutation) ResetUpdatedAt() {
 }
 
 // SetAuthorID sets the "author" edge to the Author entity by id.
-func (m *ArticleMutation) SetAuthorID(id uint64) {
+func (m *ArticleMutation) SetAuthorID(id int64) {
 	m.author = &id
 }
 
@@ -311,7 +311,7 @@ func (m *ArticleMutation) AuthorCleared() bool {
 }
 
 // AuthorID returns the "author" edge ID in the mutation.
-func (m *ArticleMutation) AuthorID() (id uint64, exists bool) {
+func (m *ArticleMutation) AuthorID() (id int64, exists bool) {
 	if m.author != nil {
 		return *m.author, true
 	}
@@ -321,7 +321,7 @@ func (m *ArticleMutation) AuthorID() (id uint64, exists bool) {
 // AuthorIDs returns the "author" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // AuthorID instead. It exists only for internal usage by the builders.
-func (m *ArticleMutation) AuthorIDs() (ids []uint64) {
+func (m *ArticleMutation) AuthorIDs() (ids []int64) {
 	if id := m.author; id != nil {
 		ids = append(ids, *id)
 	}
@@ -595,7 +595,7 @@ type AuthorMutation struct {
 	config
 	op             Op
 	typ            string
-	id             *uint64
+	id             *int64
 	name           *string
 	created_at     *time.Time
 	updated_at     *time.Time
@@ -628,7 +628,7 @@ func newAuthorMutation(c config, op Op, opts ...authorOption) *AuthorMutation {
 }
 
 // withAuthorID sets the ID field of the mutation.
-func withAuthorID(id uint64) authorOption {
+func withAuthorID(id int64) authorOption {
 	return func(m *AuthorMutation) {
 		var (
 			err   error
@@ -680,13 +680,13 @@ func (m AuthorMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Author entities.
-func (m *AuthorMutation) SetID(id uint64) {
+func (m *AuthorMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AuthorMutation) ID() (id uint64, exists bool) {
+func (m *AuthorMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -697,12 +697,12 @@ func (m *AuthorMutation) ID() (id uint64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AuthorMutation) IDs(ctx context.Context) ([]uint64, error) {
+func (m *AuthorMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []uint64{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):

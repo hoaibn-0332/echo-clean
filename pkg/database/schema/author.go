@@ -13,7 +13,7 @@ type Author struct {
 
 func (Author) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint64("id").
+		field.Int64("id").
 			Immutable().
 			Unique().
 			StructTag(`json:"id,omitempty"`),

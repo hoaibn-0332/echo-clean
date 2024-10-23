@@ -68,7 +68,7 @@ func (ac *ArticleCreate) SetID(u uint64) *ArticleCreate {
 }
 
 // SetAuthorID sets the "author" edge to the Author entity by ID.
-func (ac *ArticleCreate) SetAuthorID(id uint64) *ArticleCreate {
+func (ac *ArticleCreate) SetAuthorID(id int64) *ArticleCreate {
 	ac.mutation.SetAuthorID(id)
 	return ac
 }
@@ -201,7 +201,7 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 			Columns: []string{article.AuthorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

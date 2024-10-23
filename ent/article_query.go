@@ -410,8 +410,8 @@ func (aq *ArticleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Arti
 }
 
 func (aq *ArticleQuery) loadAuthor(ctx context.Context, query *AuthorQuery, nodes []*Article, init func(*Article), assign func(*Article, *Author)) error {
-	ids := make([]uint64, 0, len(nodes))
-	nodeids := make(map[uint64][]*Article)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Article)
 	for i := range nodes {
 		if nodes[i].author_article == nil {
 			continue

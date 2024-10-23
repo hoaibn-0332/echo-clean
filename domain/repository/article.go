@@ -1,18 +1,15 @@
 package repository
 
-import (
-	"context"
-	"echo-clean/domain/entity"
-)
+import "echo-clean/domain/entity"
 
 // ArticleRepository represent the article's repository contract
 //
 //go:generate mockery --name ArticleRepository
 type ArticleRepository interface {
-	Fetch(ctx context.Context, cursor string, num int64) (res []entity.Article, nextCursor string, err error)
-	GetByID(ctx context.Context, id int64) (entity.Article, error)
-	GetByTitle(ctx context.Context, title string) (entity.Article, error)
-	Update(ctx context.Context, ar *entity.Article) error
-	Store(ctx context.Context, a *entity.Article) error
-	Delete(ctx context.Context, id int64) error
+	Store(article *entity.Article, authorId int) (*entity.Article, error)
+	Fetch() ([]*entity.Article, error)
+	GetByID(id uint64) (*entity.Article, error)
+	GetByTitle(title string) (*entity.Article, error)
+	Update(article *entity.Article) (*entity.Article, error)
+	Delete(id uint64) error
 }

@@ -78,7 +78,7 @@ func (au *ArticleUpdate) SetUpdatedAt(t time.Time) *ArticleUpdate {
 }
 
 // SetAuthorID sets the "author" edge to the Author entity by ID.
-func (au *ArticleUpdate) SetAuthorID(id uint64) *ArticleUpdate {
+func (au *ArticleUpdate) SetAuthorID(id int64) *ArticleUpdate {
 	au.mutation.SetAuthorID(id)
 	return au
 }
@@ -180,7 +180,7 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{article.AuthorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -193,7 +193,7 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{article.AuthorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -270,7 +270,7 @@ func (auo *ArticleUpdateOne) SetUpdatedAt(t time.Time) *ArticleUpdateOne {
 }
 
 // SetAuthorID sets the "author" edge to the Author entity by ID.
-func (auo *ArticleUpdateOne) SetAuthorID(id uint64) *ArticleUpdateOne {
+func (auo *ArticleUpdateOne) SetAuthorID(id int64) *ArticleUpdateOne {
 	auo.mutation.SetAuthorID(id)
 	return auo
 }
@@ -402,7 +402,7 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 			Columns: []string{article.AuthorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -415,7 +415,7 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 			Columns: []string{article.AuthorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
