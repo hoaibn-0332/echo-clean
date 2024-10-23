@@ -25,7 +25,6 @@ func (Author) Fields() []ent.Field {
 			StructTag(`json:"created_at,omitempty"`),
 		field.Time("updated_at").
 			Default(time.Now()).
-			UpdateDefault(time.Now()).
 			StructTag(`json:"updated_at,omitempty`),
 	}
 }

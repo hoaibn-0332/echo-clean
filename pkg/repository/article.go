@@ -1,43 +1,136 @@
 package repository
 
 import (
+	"context"
 	"echo-clean/domain/entity"
 	"echo-clean/domain/repository"
 	"echo-clean/ent"
+	art "echo-clean/ent/article"
+	"echo-clean/pkg/logger"
+	"time"
 )
 
 type ArticleRepository struct {
 	client *ent.Client
 }
 
-func (a ArticleRepository) Store(article *entity.Article, authorId int) (*entity.Article, error) {
-	//TODO implement me
-	panic("implement me")
+func ParserArticle(article *ent.Article) *entity.Article {
+	return &entity.Article{
+		ID:        article.ID,
+		Title:     article.Title,
+		Content:   article.Content,
+		Author:    *ParserAuthor(article.Edges.Author),
+		CreatedAt: article.CreatedAt,
+		UpdatedAt: article.UpdatedAt,
+	}
+}
+
+func (a ArticleRepository) Store(article *entity.Article, authorId int64) (*entity.Article, error) {
+	ar, err := a.client.Article.Create().
+		SetTitle(article.Title).
+		SetContent(article.Content).
+		SetAuthorID(authorId).
+		SetCreatedAt(time.Now()).
+		SetUpdatedAt(time.Now()).
+		Save(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	fullAr, err := a.client.Article.Query().
+		Where(art.IDEQ(ar.ID)).
+		WithAuthor().
+		Only(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ParserArticle(fullAr), nil
 }
 
 func (a ArticleRepository) Fetch() ([]*entity.Article, error) {
-	//TODO implement me
-	panic("implement me")
+
+	in, e1 := a.client.Author.Create().
+		SetID(1).
+		SetName("Test 1").
+		SetCreatedAt(time.Now()).
+		SetUpdatedAt(time.Now()).
+		Save(context.Background())
+
+	logger.Debug("Insert success: ", e1 == nil)
+	logger.Debug("Data after insert: ", in)
+	logger.Error("Error insert: ", e1)
+
+	other, e := a.client.Author.Query().All(context.Background())
+	logger.Debug("Other nil", e == nil)
+	logger.Debug("Other", other)
+
+	articles, err := a.client.Article.Query().
+		WithAuthor().
+		All(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*entity.Article
+	for _, article := range articles {
+		result = append(result, ParserArticle(article))
+	}
+
+	return result, nil
 }
 
-func (a ArticleRepository) GetByID(id uint64) (*entity.Article, error) {
-	//TODO implement me
-	panic("implement me")
+func (a ArticleRepository) GetByID(id int64) (*entity.Article, error) {
+	article, err := a.client.Article.Query().
+		Where(art.IDEQ(id)).
+		WithAuthor().
+		Only(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ParserArticle(article), nil
 }
 
 func (a ArticleRepository) GetByTitle(title string) (*entity.Article, error) {
-	//TODO implement me
-	panic("implement me")
+	article, err := a.client.Article.Query().
+		Where(art.TitleEQ(title)).
+		WithAuthor().
+		Only(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ParserArticle(article), nil
 }
 
 func (a ArticleRepository) Update(article *entity.Article) (*entity.Article, error) {
-	//TODO implement me
-	panic("implement me")
+	ar, err := a.client.Article.UpdateOneID(article.ID).
+		SetTitle(article.Title).
+		SetContent(article.Content).
+		Save(context.Background())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ParserArticle(ar), nil
 }
 
-func (a ArticleRepository) Delete(id uint64) error {
-	//TODO implement me
-	panic("implement me")
+func (a ArticleRepository) Delete(id int64) error {
+	err := a.client.Article.DeleteOneID(id).
+		Exec(context.Background())
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewArticleRepository(client *ent.Client) repository.ArticleRepository {

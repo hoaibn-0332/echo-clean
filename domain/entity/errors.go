@@ -1,6 +1,25 @@
 package entity
 
-import "errors"
+import (
+	"errors"
+)
+
+type Error struct {
+	Message string `json:"error_message"`
+	Code    int    `json:"error_code"`
+}
+
+type Errors struct {
+	Errors     []Error
+	HttpStatus int
+}
+
+var (
+	E10001 = Error{Message: "Internal Server Error", Code: 10001}
+	E10002 = Error{Message: "Not Found", Code: 10002}
+	E10003 = Error{Message: "Conflict", Code: 10003}
+	E10004 = Error{Message: "Bad Param Input", Code: 10004}
+)
 
 var (
 	// ErrInternalServerError will throw if any the Internal Server Error happen

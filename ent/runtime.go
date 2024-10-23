@@ -27,8 +27,6 @@ func init() {
 	articleDescUpdatedAt := articleFields[4].Descriptor()
 	// article.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	article.DefaultUpdatedAt = articleDescUpdatedAt.Default.(func() time.Time)
-	// article.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	article.UpdateDefaultUpdatedAt = articleDescUpdatedAt.UpdateDefault.(func() time.Time)
 	authorFields := schema.Author{}.Fields()
 	_ = authorFields
 	// authorDescName is the schema descriptor for name field.
@@ -43,6 +41,4 @@ func init() {
 	authorDescUpdatedAt := authorFields[3].Descriptor()
 	// author.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	author.DefaultUpdatedAt = authorDescUpdatedAt.Default.(time.Time)
-	// author.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	author.UpdateDefaultUpdatedAt = authorDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

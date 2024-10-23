@@ -62,14 +62,14 @@ func (ac *AuthorCreate) SetID(i int64) *AuthorCreate {
 }
 
 // AddArticleIDs adds the "article" edge to the Article entity by IDs.
-func (ac *AuthorCreate) AddArticleIDs(ids ...uint64) *AuthorCreate {
+func (ac *AuthorCreate) AddArticleIDs(ids ...int64) *AuthorCreate {
 	ac.mutation.AddArticleIDs(ids...)
 	return ac
 }
 
 // AddArticle adds the "article" edges to the Article entity.
 func (ac *AuthorCreate) AddArticle(a ...*Article) *AuthorCreate {
-	ids := make([]uint64, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -189,7 +189,7 @@ func (ac *AuthorCreate) createSpec() (*Author, *sqlgraph.CreateSpec) {
 			Columns: []string{author.ArticleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

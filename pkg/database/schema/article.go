@@ -13,7 +13,7 @@ type Article struct {
 
 func (Article) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint64("id").
+		field.Int64("id").
 			Immutable().
 			Unique().
 			StructTag(`json:"id,omitempty"`),
@@ -27,7 +27,6 @@ func (Article) Fields() []ent.Field {
 			StructTag(`json:"created_at,omitempty"`),
 		field.Time("updated_at").
 			Default(time.Now).
-			UpdateDefault(time.Now).
 			StructTag(`json:"updated_at,omitempty"`),
 	}
 }

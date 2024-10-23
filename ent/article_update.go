@@ -77,6 +77,14 @@ func (au *ArticleUpdate) SetUpdatedAt(t time.Time) *ArticleUpdate {
 	return au
 }
 
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (au *ArticleUpdate) SetNillableUpdatedAt(t *time.Time) *ArticleUpdate {
+	if t != nil {
+		au.SetUpdatedAt(*t)
+	}
+	return au
+}
+
 // SetAuthorID sets the "author" edge to the Author entity by ID.
 func (au *ArticleUpdate) SetAuthorID(id int64) *ArticleUpdate {
 	au.mutation.SetAuthorID(id)
@@ -101,7 +109,6 @@ func (au *ArticleUpdate) ClearAuthor() *ArticleUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (au *ArticleUpdate) Save(ctx context.Context) (int, error) {
-	au.defaults()
 	return withHooks(ctx, au.sqlSave, au.mutation, au.hooks)
 }
 
@@ -127,14 +134,6 @@ func (au *ArticleUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (au *ArticleUpdate) defaults() {
-	if _, ok := au.mutation.UpdatedAt(); !ok {
-		v := article.UpdateDefaultUpdatedAt()
-		au.mutation.SetUpdatedAt(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (au *ArticleUpdate) check() error {
 	if v, ok := au.mutation.Title(); ok {
@@ -152,7 +151,7 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := au.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(article.Table, article.Columns, sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64))
+	_spec := sqlgraph.NewUpdateSpec(article.Table, article.Columns, sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64))
 	if ps := au.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -269,6 +268,14 @@ func (auo *ArticleUpdateOne) SetUpdatedAt(t time.Time) *ArticleUpdateOne {
 	return auo
 }
 
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (auo *ArticleUpdateOne) SetNillableUpdatedAt(t *time.Time) *ArticleUpdateOne {
+	if t != nil {
+		auo.SetUpdatedAt(*t)
+	}
+	return auo
+}
+
 // SetAuthorID sets the "author" edge to the Author entity by ID.
 func (auo *ArticleUpdateOne) SetAuthorID(id int64) *ArticleUpdateOne {
 	auo.mutation.SetAuthorID(id)
@@ -306,7 +313,6 @@ func (auo *ArticleUpdateOne) Select(field string, fields ...string) *ArticleUpda
 
 // Save executes the query and returns the updated Article entity.
 func (auo *ArticleUpdateOne) Save(ctx context.Context) (*Article, error) {
-	auo.defaults()
 	return withHooks(ctx, auo.sqlSave, auo.mutation, auo.hooks)
 }
 
@@ -332,14 +338,6 @@ func (auo *ArticleUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (auo *ArticleUpdateOne) defaults() {
-	if _, ok := auo.mutation.UpdatedAt(); !ok {
-		v := article.UpdateDefaultUpdatedAt()
-		auo.mutation.SetUpdatedAt(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (auo *ArticleUpdateOne) check() error {
 	if v, ok := auo.mutation.Title(); ok {
@@ -357,7 +355,7 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 	if err := auo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(article.Table, article.Columns, sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64))
+	_spec := sqlgraph.NewUpdateSpec(article.Table, article.Columns, sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64))
 	id, ok := auo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Article.id" for update`)}

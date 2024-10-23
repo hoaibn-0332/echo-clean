@@ -1,27 +1,20 @@
 package database
 
 import (
-	"database/sql"
+	"echo-clean/config"
+	"echo-clean/ent"
 	"echo-clean/pkg/logger"
 	"entgo.io/ent/dialect"
 	"fmt"
+	_ "github.com/lib/pq"
 )
 
-type DBConfig struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	DBName   string
-	SSLMode  string
-}
-
-func ConnectToPostgres(config DBConfig) (*sql.DB, error) {
+func ConnectToPostgres(config config.DBConfig) (*ent.Client, error) {
 	// Connect to postgres
 	dns := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
 
-	db, err := sql.Open(dialect.Postgres, dns)
+	db, err := ent.Open(dialect.Postgres, dns)
 	if err != nil {
 		return nil, err
 	}

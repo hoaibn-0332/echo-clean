@@ -1,7 +1,10 @@
 package route
 
-import "github.com/labstack/echo/v4"
+import (
+	"echo-clean/app/handler"
+	"github.com/labstack/echo/v4"
+)
 
-func RegisterRoutes(e *echo.Echo) {
-	NewArticleHandler(e)
+func RegisterRoutes(e *echo.Echo, article *handler.ArticleHandler) {
+	RegisterArticleRoutes(e, article)
 }

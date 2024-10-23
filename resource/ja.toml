@@ -1,0 +1,10 @@
+[Common]
+10001 = "Internal Server Error"
+10002 = "Your requested Item is not found"
+10003 = "Error reading config file"
+10004 = "Your Item already exist"
+
+[Database]
+20001 = "Failed to open connection to database."
+20002 = "Failed to ping database"
+20003 = "Got error when closing the DB connection"
