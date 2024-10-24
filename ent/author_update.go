@@ -63,15 +63,23 @@ func (au *AuthorUpdate) SetUpdatedAt(t time.Time) *AuthorUpdate {
 	return au
 }
 
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (au *AuthorUpdate) SetNillableUpdatedAt(t *time.Time) *AuthorUpdate {
+	if t != nil {
+		au.SetUpdatedAt(*t)
+	}
+	return au
+}
+
 // AddArticleIDs adds the "article" edge to the Article entity by IDs.
-func (au *AuthorUpdate) AddArticleIDs(ids ...uint64) *AuthorUpdate {
+func (au *AuthorUpdate) AddArticleIDs(ids ...int64) *AuthorUpdate {
 	au.mutation.AddArticleIDs(ids...)
 	return au
 }
 
 // AddArticle adds the "article" edges to the Article entity.
 func (au *AuthorUpdate) AddArticle(a ...*Article) *AuthorUpdate {
-	ids := make([]uint64, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -90,14 +98,14 @@ func (au *AuthorUpdate) ClearArticle() *AuthorUpdate {
 }
 
 // RemoveArticleIDs removes the "article" edge to Article entities by IDs.
-func (au *AuthorUpdate) RemoveArticleIDs(ids ...uint64) *AuthorUpdate {
+func (au *AuthorUpdate) RemoveArticleIDs(ids ...int64) *AuthorUpdate {
 	au.mutation.RemoveArticleIDs(ids...)
 	return au
 }
 
 // RemoveArticle removes "article" edges to Article entities.
 func (au *AuthorUpdate) RemoveArticle(a ...*Article) *AuthorUpdate {
-	ids := make([]uint64, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -106,7 +114,6 @@ func (au *AuthorUpdate) RemoveArticle(a ...*Article) *AuthorUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (au *AuthorUpdate) Save(ctx context.Context) (int, error) {
-	au.defaults()
 	return withHooks(ctx, au.sqlSave, au.mutation, au.hooks)
 }
 
@@ -132,14 +139,6 @@ func (au *AuthorUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (au *AuthorUpdate) defaults() {
-	if _, ok := au.mutation.UpdatedAt(); !ok {
-		v := author.UpdateDefaultUpdatedAt()
-		au.mutation.SetUpdatedAt(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (au *AuthorUpdate) check() error {
 	if v, ok := au.mutation.Name(); ok {
@@ -154,7 +153,7 @@ func (au *AuthorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := au.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(author.Table, author.Columns, sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64))
+	_spec := sqlgraph.NewUpdateSpec(author.Table, author.Columns, sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64))
 	if ps := au.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -179,7 +178,7 @@ func (au *AuthorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{author.ArticleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -192,7 +191,7 @@ func (au *AuthorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{author.ArticleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -208,7 +207,7 @@ func (au *AuthorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{author.ArticleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -270,15 +269,23 @@ func (auo *AuthorUpdateOne) SetUpdatedAt(t time.Time) *AuthorUpdateOne {
 	return auo
 }
 
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (auo *AuthorUpdateOne) SetNillableUpdatedAt(t *time.Time) *AuthorUpdateOne {
+	if t != nil {
+		auo.SetUpdatedAt(*t)
+	}
+	return auo
+}
+
 // AddArticleIDs adds the "article" edge to the Article entity by IDs.
-func (auo *AuthorUpdateOne) AddArticleIDs(ids ...uint64) *AuthorUpdateOne {
+func (auo *AuthorUpdateOne) AddArticleIDs(ids ...int64) *AuthorUpdateOne {
 	auo.mutation.AddArticleIDs(ids...)
 	return auo
 }
 
 // AddArticle adds the "article" edges to the Article entity.
 func (auo *AuthorUpdateOne) AddArticle(a ...*Article) *AuthorUpdateOne {
-	ids := make([]uint64, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -297,14 +304,14 @@ func (auo *AuthorUpdateOne) ClearArticle() *AuthorUpdateOne {
 }
 
 // RemoveArticleIDs removes the "article" edge to Article entities by IDs.
-func (auo *AuthorUpdateOne) RemoveArticleIDs(ids ...uint64) *AuthorUpdateOne {
+func (auo *AuthorUpdateOne) RemoveArticleIDs(ids ...int64) *AuthorUpdateOne {
 	auo.mutation.RemoveArticleIDs(ids...)
 	return auo
 }
 
 // RemoveArticle removes "article" edges to Article entities.
 func (auo *AuthorUpdateOne) RemoveArticle(a ...*Article) *AuthorUpdateOne {
-	ids := make([]uint64, len(a))
+	ids := make([]int64, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -326,7 +333,6 @@ func (auo *AuthorUpdateOne) Select(field string, fields ...string) *AuthorUpdate
 
 // Save executes the query and returns the updated Author entity.
 func (auo *AuthorUpdateOne) Save(ctx context.Context) (*Author, error) {
-	auo.defaults()
 	return withHooks(ctx, auo.sqlSave, auo.mutation, auo.hooks)
 }
 
@@ -352,14 +358,6 @@ func (auo *AuthorUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (auo *AuthorUpdateOne) defaults() {
-	if _, ok := auo.mutation.UpdatedAt(); !ok {
-		v := author.UpdateDefaultUpdatedAt()
-		auo.mutation.SetUpdatedAt(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (auo *AuthorUpdateOne) check() error {
 	if v, ok := auo.mutation.Name(); ok {
@@ -374,7 +372,7 @@ func (auo *AuthorUpdateOne) sqlSave(ctx context.Context) (_node *Author, err err
 	if err := auo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(author.Table, author.Columns, sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64))
+	_spec := sqlgraph.NewUpdateSpec(author.Table, author.Columns, sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64))
 	id, ok := auo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Author.id" for update`)}
@@ -416,7 +414,7 @@ func (auo *AuthorUpdateOne) sqlSave(ctx context.Context) (_node *Author, err err
 			Columns: []string{author.ArticleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -429,7 +427,7 @@ func (auo *AuthorUpdateOne) sqlSave(ctx context.Context) (_node *Author, err err
 			Columns: []string{author.ArticleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -445,7 +443,7 @@ func (auo *AuthorUpdateOne) sqlSave(ctx context.Context) (_node *Author, err err
 			Columns: []string{author.ArticleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

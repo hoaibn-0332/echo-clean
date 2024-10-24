@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"context"
 	"echo-clean/domain/entity"
 )
 
@@ -9,5 +8,9 @@ import (
 //
 //go:generate mockery --name AuthorRepository
 type AuthorRepository interface {
-	GetByID(ctx context.Context, id int64) (entity.Author, error)
+	Store(name string) (*entity.Author, error)
+	Fetch() ([]*entity.Author, error)
+	GetByID(id int64) (*entity.Author, error)
+	Update(author *entity.Author) (*entity.Author, error)
+	Delete(id int64) error
 }

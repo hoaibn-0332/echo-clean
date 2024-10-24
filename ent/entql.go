@@ -21,7 +21,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   article.Table,
 			Columns: article.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: article.FieldID,
 			},
 		},
@@ -29,6 +29,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			article.FieldTitle:     {Type: field.TypeString, Column: article.FieldTitle},
 			article.FieldContent:   {Type: field.TypeString, Column: article.FieldContent},
+			article.FieldAuthorID:  {Type: field.TypeInt64, Column: article.FieldAuthorID},
 			article.FieldCreatedAt: {Type: field.TypeTime, Column: article.FieldCreatedAt},
 			article.FieldUpdatedAt: {Type: field.TypeTime, Column: article.FieldUpdatedAt},
 		},
@@ -38,7 +39,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			Table:   author.Table,
 			Columns: author.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: author.FieldID,
 			},
 		},
@@ -117,8 +118,8 @@ func (f *ArticleFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql uint64 predicate on the id field.
-func (f *ArticleFilter) WhereID(p entql.Uint64P) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *ArticleFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(article.FieldID))
 }
 
@@ -130,6 +131,11 @@ func (f *ArticleFilter) WhereTitle(p entql.StringP) {
 // WhereContent applies the entql string predicate on the content field.
 func (f *ArticleFilter) WhereContent(p entql.StringP) {
 	f.Where(p.Field(article.FieldContent))
+}
+
+// WhereAuthorID applies the entql int64 predicate on the author_id field.
+func (f *ArticleFilter) WhereAuthorID(p entql.Int64P) {
+	f.Where(p.Field(article.FieldAuthorID))
 }
 
 // WhereCreatedAt applies the entql time.Time predicate on the created_at field.
@@ -191,8 +197,8 @@ func (f *AuthorFilter) Where(p entql.P) {
 	})
 }
 
-// WhereID applies the entql uint64 predicate on the id field.
-func (f *AuthorFilter) WhereID(p entql.Uint64P) {
+// WhereID applies the entql int64 predicate on the id field.
+func (f *AuthorFilter) WhereID(p entql.Int64P) {
 	f.Where(p.Field(author.FieldID))
 }
 

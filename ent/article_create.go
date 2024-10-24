@@ -33,6 +33,12 @@ func (ac *ArticleCreate) SetContent(s string) *ArticleCreate {
 	return ac
 }
 
+// SetAuthorID sets the "author_id" field.
+func (ac *ArticleCreate) SetAuthorID(i int64) *ArticleCreate {
+	ac.mutation.SetAuthorID(i)
+	return ac
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (ac *ArticleCreate) SetCreatedAt(t time.Time) *ArticleCreate {
 	ac.mutation.SetCreatedAt(t)
@@ -62,14 +68,8 @@ func (ac *ArticleCreate) SetNillableUpdatedAt(t *time.Time) *ArticleCreate {
 }
 
 // SetID sets the "id" field.
-func (ac *ArticleCreate) SetID(u uint64) *ArticleCreate {
-	ac.mutation.SetID(u)
-	return ac
-}
-
-// SetAuthorID sets the "author" edge to the Author entity by ID.
-func (ac *ArticleCreate) SetAuthorID(id uint64) *ArticleCreate {
-	ac.mutation.SetAuthorID(id)
+func (ac *ArticleCreate) SetID(i int64) *ArticleCreate {
+	ac.mutation.SetID(i)
 	return ac
 }
 
@@ -136,6 +136,9 @@ func (ac *ArticleCreate) check() error {
 	if _, ok := ac.mutation.Content(); !ok {
 		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "Article.content"`)}
 	}
+	if _, ok := ac.mutation.AuthorID(); !ok {
+		return &ValidationError{Name: "author_id", err: errors.New(`ent: missing required field "Article.author_id"`)}
+	}
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Article.created_at"`)}
 	}
@@ -161,7 +164,7 @@ func (ac *ArticleCreate) sqlSave(ctx context.Context) (*Article, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint64(id)
+		_node.ID = int64(id)
 	}
 	ac.mutation.id = &_node.ID
 	ac.mutation.done = true
@@ -171,7 +174,7 @@ func (ac *ArticleCreate) sqlSave(ctx context.Context) (*Article, error) {
 func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Article{config: ac.config}
-		_spec = sqlgraph.NewCreateSpec(article.Table, sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64))
+		_spec = sqlgraph.NewCreateSpec(article.Table, sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64))
 	)
 	if id, ok := ac.mutation.ID(); ok {
 		_node.ID = id
@@ -201,13 +204,13 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 			Columns: []string{article.AuthorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(author.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.author_article = &nodes[0]
+		_node.AuthorID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -260,7 +263,7 @@ func (acb *ArticleCreateBulk) Save(ctx context.Context) ([]*Article, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint64(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

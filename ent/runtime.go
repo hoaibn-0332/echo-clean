@@ -20,15 +20,13 @@ func init() {
 	// article.TitleValidator is a validator for the "title" field. It is called by the builders before save.
 	article.TitleValidator = articleDescTitle.Validators[0].(func(string) error)
 	// articleDescCreatedAt is the schema descriptor for created_at field.
-	articleDescCreatedAt := articleFields[3].Descriptor()
+	articleDescCreatedAt := articleFields[4].Descriptor()
 	// article.DefaultCreatedAt holds the default value on creation for the created_at field.
 	article.DefaultCreatedAt = articleDescCreatedAt.Default.(func() time.Time)
 	// articleDescUpdatedAt is the schema descriptor for updated_at field.
-	articleDescUpdatedAt := articleFields[4].Descriptor()
+	articleDescUpdatedAt := articleFields[5].Descriptor()
 	// article.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	article.DefaultUpdatedAt = articleDescUpdatedAt.Default.(func() time.Time)
-	// article.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	article.UpdateDefaultUpdatedAt = articleDescUpdatedAt.UpdateDefault.(func() time.Time)
 	authorFields := schema.Author{}.Fields()
 	_ = authorFields
 	// authorDescName is the schema descriptor for name field.
@@ -43,6 +41,4 @@ func init() {
 	authorDescUpdatedAt := authorFields[3].Descriptor()
 	// author.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	author.DefaultUpdatedAt = authorDescUpdatedAt.Default.(time.Time)
-	// author.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	author.UpdateDefaultUpdatedAt = authorDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

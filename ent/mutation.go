@@ -34,13 +34,13 @@ type ArticleMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *uint64
+	id            *int64
 	title         *string
 	content       *string
 	created_at    *time.Time
 	updated_at    *time.Time
 	clearedFields map[string]struct{}
-	author        *uint64
+	author        *int64
 	clearedauthor bool
 	done          bool
 	oldValue      func(context.Context) (*Article, error)
@@ -67,7 +67,7 @@ func newArticleMutation(c config, op Op, opts ...articleOption) *ArticleMutation
 }
 
 // withArticleID sets the ID field of the mutation.
-func withArticleID(id uint64) articleOption {
+func withArticleID(id int64) articleOption {
 	return func(m *ArticleMutation) {
 		var (
 			err   error
@@ -119,13 +119,13 @@ func (m ArticleMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Article entities.
-func (m *ArticleMutation) SetID(id uint64) {
+func (m *ArticleMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ArticleMutation) ID() (id uint64, exists bool) {
+func (m *ArticleMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -136,12 +136,12 @@ func (m *ArticleMutation) ID() (id uint64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ArticleMutation) IDs(ctx context.Context) ([]uint64, error) {
+func (m *ArticleMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []uint64{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -223,6 +223,42 @@ func (m *ArticleMutation) ResetContent() {
 	m.content = nil
 }
 
+// SetAuthorID sets the "author_id" field.
+func (m *ArticleMutation) SetAuthorID(i int64) {
+	m.author = &i
+}
+
+// AuthorID returns the value of the "author_id" field in the mutation.
+func (m *ArticleMutation) AuthorID() (r int64, exists bool) {
+	v := m.author
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAuthorID returns the old "author_id" field's value of the Article entity.
+// If the Article object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArticleMutation) OldAuthorID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAuthorID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAuthorID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAuthorID: %w", err)
+	}
+	return oldValue.AuthorID, nil
+}
+
+// ResetAuthorID resets all changes to the "author_id" field.
+func (m *ArticleMutation) ResetAuthorID() {
+	m.author = nil
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *ArticleMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -295,14 +331,10 @@ func (m *ArticleMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetAuthorID sets the "author" edge to the Author entity by id.
-func (m *ArticleMutation) SetAuthorID(id uint64) {
-	m.author = &id
-}
-
 // ClearAuthor clears the "author" edge to the Author entity.
 func (m *ArticleMutation) ClearAuthor() {
 	m.clearedauthor = true
+	m.clearedFields[article.FieldAuthorID] = struct{}{}
 }
 
 // AuthorCleared reports if the "author" edge to the Author entity was cleared.
@@ -310,18 +342,10 @@ func (m *ArticleMutation) AuthorCleared() bool {
 	return m.clearedauthor
 }
 
-// AuthorID returns the "author" edge ID in the mutation.
-func (m *ArticleMutation) AuthorID() (id uint64, exists bool) {
-	if m.author != nil {
-		return *m.author, true
-	}
-	return
-}
-
 // AuthorIDs returns the "author" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // AuthorID instead. It exists only for internal usage by the builders.
-func (m *ArticleMutation) AuthorIDs() (ids []uint64) {
+func (m *ArticleMutation) AuthorIDs() (ids []int64) {
 	if id := m.author; id != nil {
 		ids = append(ids, *id)
 	}
@@ -368,12 +392,15 @@ func (m *ArticleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ArticleMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.title != nil {
 		fields = append(fields, article.FieldTitle)
 	}
 	if m.content != nil {
 		fields = append(fields, article.FieldContent)
+	}
+	if m.author != nil {
+		fields = append(fields, article.FieldAuthorID)
 	}
 	if m.created_at != nil {
 		fields = append(fields, article.FieldCreatedAt)
@@ -393,6 +420,8 @@ func (m *ArticleMutation) Field(name string) (ent.Value, bool) {
 		return m.Title()
 	case article.FieldContent:
 		return m.Content()
+	case article.FieldAuthorID:
+		return m.AuthorID()
 	case article.FieldCreatedAt:
 		return m.CreatedAt()
 	case article.FieldUpdatedAt:
@@ -410,6 +439,8 @@ func (m *ArticleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldTitle(ctx)
 	case article.FieldContent:
 		return m.OldContent(ctx)
+	case article.FieldAuthorID:
+		return m.OldAuthorID(ctx)
 	case article.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case article.FieldUpdatedAt:
@@ -437,6 +468,13 @@ func (m *ArticleMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetContent(v)
 		return nil
+	case article.FieldAuthorID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAuthorID(v)
+		return nil
 	case article.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -458,13 +496,16 @@ func (m *ArticleMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ArticleMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ArticleMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 
@@ -505,6 +546,9 @@ func (m *ArticleMutation) ResetField(name string) error {
 		return nil
 	case article.FieldContent:
 		m.ResetContent()
+		return nil
+	case article.FieldAuthorID:
+		m.ResetAuthorID()
 		return nil
 	case article.FieldCreatedAt:
 		m.ResetCreatedAt()
@@ -595,13 +639,13 @@ type AuthorMutation struct {
 	config
 	op             Op
 	typ            string
-	id             *uint64
+	id             *int64
 	name           *string
 	created_at     *time.Time
 	updated_at     *time.Time
 	clearedFields  map[string]struct{}
-	article        map[uint64]struct{}
-	removedarticle map[uint64]struct{}
+	article        map[int64]struct{}
+	removedarticle map[int64]struct{}
 	clearedarticle bool
 	done           bool
 	oldValue       func(context.Context) (*Author, error)
@@ -628,7 +672,7 @@ func newAuthorMutation(c config, op Op, opts ...authorOption) *AuthorMutation {
 }
 
 // withAuthorID sets the ID field of the mutation.
-func withAuthorID(id uint64) authorOption {
+func withAuthorID(id int64) authorOption {
 	return func(m *AuthorMutation) {
 		var (
 			err   error
@@ -680,13 +724,13 @@ func (m AuthorMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Author entities.
-func (m *AuthorMutation) SetID(id uint64) {
+func (m *AuthorMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AuthorMutation) ID() (id uint64, exists bool) {
+func (m *AuthorMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -697,12 +741,12 @@ func (m *AuthorMutation) ID() (id uint64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AuthorMutation) IDs(ctx context.Context) ([]uint64, error) {
+func (m *AuthorMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []uint64{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -821,9 +865,9 @@ func (m *AuthorMutation) ResetUpdatedAt() {
 }
 
 // AddArticleIDs adds the "article" edge to the Article entity by ids.
-func (m *AuthorMutation) AddArticleIDs(ids ...uint64) {
+func (m *AuthorMutation) AddArticleIDs(ids ...int64) {
 	if m.article == nil {
-		m.article = make(map[uint64]struct{})
+		m.article = make(map[int64]struct{})
 	}
 	for i := range ids {
 		m.article[ids[i]] = struct{}{}
@@ -841,9 +885,9 @@ func (m *AuthorMutation) ArticleCleared() bool {
 }
 
 // RemoveArticleIDs removes the "article" edge to the Article entity by IDs.
-func (m *AuthorMutation) RemoveArticleIDs(ids ...uint64) {
+func (m *AuthorMutation) RemoveArticleIDs(ids ...int64) {
 	if m.removedarticle == nil {
-		m.removedarticle = make(map[uint64]struct{})
+		m.removedarticle = make(map[int64]struct{})
 	}
 	for i := range ids {
 		delete(m.article, ids[i])
@@ -852,7 +896,7 @@ func (m *AuthorMutation) RemoveArticleIDs(ids ...uint64) {
 }
 
 // RemovedArticle returns the removed IDs of the "article" edge to the Article entity.
-func (m *AuthorMutation) RemovedArticleIDs() (ids []uint64) {
+func (m *AuthorMutation) RemovedArticleIDs() (ids []int64) {
 	for id := range m.removedarticle {
 		ids = append(ids, id)
 	}
@@ -860,7 +904,7 @@ func (m *AuthorMutation) RemovedArticleIDs() (ids []uint64) {
 }
 
 // ArticleIDs returns the "article" edge IDs in the mutation.
-func (m *AuthorMutation) ArticleIDs() (ids []uint64) {
+func (m *AuthorMutation) ArticleIDs() (ids []int64) {
 	for id := range m.article {
 		ids = append(ids, id)
 	}

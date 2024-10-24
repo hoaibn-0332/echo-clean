@@ -16,7 +16,7 @@ import (
 type Author struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID uint64 `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -78,7 +78,7 @@ func (a *Author) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			a.ID = uint64(value.Int64)
+			a.ID = int64(value.Int64)
 		case author.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])

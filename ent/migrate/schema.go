@@ -3,54 +3,61 @@
 package migrate
 
 import (
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/dialect/sql/schema"
 	"entgo.io/ent/schema/field"
 )
 
 var (
-	// ArticlesColumns holds the columns for the "articles" table.
-	ArticlesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
+	// ArticleColumns holds the columns for the "article" table.
+	ArticleColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "title", Type: field.TypeString},
 		{Name: "content", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "author_article", Type: field.TypeUint64},
+		{Name: "author_id", Type: field.TypeInt64},
 	}
-	// ArticlesTable holds the schema information for the "articles" table.
-	ArticlesTable = &schema.Table{
-		Name:       "articles",
-		Columns:    ArticlesColumns,
-		PrimaryKey: []*schema.Column{ArticlesColumns[0]},
+	// ArticleTable holds the schema information for the "article" table.
+	ArticleTable = &schema.Table{
+		Name:       "article",
+		Columns:    ArticleColumns,
+		PrimaryKey: []*schema.Column{ArticleColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "articles_authors_article",
-				Columns:    []*schema.Column{ArticlesColumns[5]},
-				RefColumns: []*schema.Column{AuthorsColumns[0]},
-				OnDelete:   schema.NoAction,
+				Symbol:     "article_author_article",
+				Columns:    []*schema.Column{ArticleColumns[5]},
+				RefColumns: []*schema.Column{AuthorColumns[0]},
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
-	// AuthorsColumns holds the columns for the "authors" table.
-	AuthorsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
+	// AuthorColumns holds the columns for the "author" table.
+	AuthorColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
-	// AuthorsTable holds the schema information for the "authors" table.
-	AuthorsTable = &schema.Table{
-		Name:       "authors",
-		Columns:    AuthorsColumns,
-		PrimaryKey: []*schema.Column{AuthorsColumns[0]},
+	// AuthorTable holds the schema information for the "author" table.
+	AuthorTable = &schema.Table{
+		Name:       "author",
+		Columns:    AuthorColumns,
+		PrimaryKey: []*schema.Column{AuthorColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ArticlesTable,
-		AuthorsTable,
+		ArticleTable,
+		AuthorTable,
 	}
 )
 
 func init() {
-	ArticlesTable.ForeignKeys[0].RefTable = AuthorsTable
+	ArticleTable.ForeignKeys[0].RefTable = AuthorTable
+	ArticleTable.Annotation = &entsql.Annotation{
+		Table: "article",
+	}
+	AuthorTable.Annotation = &entsql.Annotation{
+		Table: "author",
+	}
 }

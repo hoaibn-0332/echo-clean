@@ -24,7 +24,6 @@ type ArticleQuery struct {
 	inters     []Interceptor
 	predicates []predicate.Article
 	withAuthor *AuthorQuery
-	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -107,8 +106,8 @@ func (aq *ArticleQuery) FirstX(ctx context.Context) *Article {
 
 // FirstID returns the first Article ID from the query.
 // Returns a *NotFoundError when no Article ID was found.
-func (aq *ArticleQuery) FirstID(ctx context.Context) (id uint64, err error) {
-	var ids []uint64
+func (aq *ArticleQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = aq.Limit(1).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -120,7 +119,7 @@ func (aq *ArticleQuery) FirstID(ctx context.Context) (id uint64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aq *ArticleQuery) FirstIDX(ctx context.Context) uint64 {
+func (aq *ArticleQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := aq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -158,8 +157,8 @@ func (aq *ArticleQuery) OnlyX(ctx context.Context) *Article {
 // OnlyID is like Only, but returns the only Article ID in the query.
 // Returns a *NotSingularError when more than one Article ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aq *ArticleQuery) OnlyID(ctx context.Context) (id uint64, err error) {
-	var ids []uint64
+func (aq *ArticleQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = aq.Limit(2).IDs(setContextOp(ctx, aq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -175,7 +174,7 @@ func (aq *ArticleQuery) OnlyID(ctx context.Context) (id uint64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aq *ArticleQuery) OnlyIDX(ctx context.Context) uint64 {
+func (aq *ArticleQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := aq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -203,7 +202,7 @@ func (aq *ArticleQuery) AllX(ctx context.Context) []*Article {
 }
 
 // IDs executes the query and returns a list of Article IDs.
-func (aq *ArticleQuery) IDs(ctx context.Context) (ids []uint64, err error) {
+func (aq *ArticleQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if aq.ctx.Unique == nil && aq.path != nil {
 		aq.Unique(true)
 	}
@@ -215,7 +214,7 @@ func (aq *ArticleQuery) IDs(ctx context.Context) (ids []uint64, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aq *ArticleQuery) IDsX(ctx context.Context) []uint64 {
+func (aq *ArticleQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := aq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -370,18 +369,11 @@ func (aq *ArticleQuery) prepareQuery(ctx context.Context) error {
 func (aq *ArticleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Article, error) {
 	var (
 		nodes       = []*Article{}
-		withFKs     = aq.withFKs
 		_spec       = aq.querySpec()
 		loadedTypes = [1]bool{
 			aq.withAuthor != nil,
 		}
 	)
-	if aq.withAuthor != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, article.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Article).scanValues(nil, columns)
 	}
@@ -410,13 +402,10 @@ func (aq *ArticleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Arti
 }
 
 func (aq *ArticleQuery) loadAuthor(ctx context.Context, query *AuthorQuery, nodes []*Article, init func(*Article), assign func(*Article, *Author)) error {
-	ids := make([]uint64, 0, len(nodes))
-	nodeids := make(map[uint64][]*Article)
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*Article)
 	for i := range nodes {
-		if nodes[i].author_article == nil {
-			continue
-		}
-		fk := *nodes[i].author_article
+		fk := nodes[i].AuthorID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -433,7 +422,7 @@ func (aq *ArticleQuery) loadAuthor(ctx context.Context, query *AuthorQuery, node
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "author_article" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "author_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -452,7 +441,7 @@ func (aq *ArticleQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (aq *ArticleQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(article.Table, article.Columns, sqlgraph.NewFieldSpec(article.FieldID, field.TypeUint64))
+	_spec := sqlgraph.NewQuerySpec(article.Table, article.Columns, sqlgraph.NewFieldSpec(article.FieldID, field.TypeInt64))
 	_spec.From = aq.sql
 	if unique := aq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -466,6 +455,9 @@ func (aq *ArticleQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != article.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if aq.withAuthor != nil {
+			_spec.Node.AddColumnOnce(article.FieldAuthorID)
 		}
 	}
 	if ps := aq.predicates; len(ps) > 0 {

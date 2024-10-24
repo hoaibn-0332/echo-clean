@@ -23,14 +23,14 @@ const (
 	// EdgeArticle holds the string denoting the article edge name in mutations.
 	EdgeArticle = "article"
 	// Table holds the table name of the author in the database.
-	Table = "authors"
+	Table = "author"
 	// ArticleTable is the table that holds the article relation/edge.
-	ArticleTable = "articles"
+	ArticleTable = "article"
 	// ArticleInverseTable is the table name for the Article entity.
 	// It exists in this package in order to avoid circular dependency with the "article" package.
-	ArticleInverseTable = "articles"
+	ArticleInverseTable = "article"
 	// ArticleColumn is the table column denoting the article relation/edge.
-	ArticleColumn = "author_article"
+	ArticleColumn = "author_id"
 )
 
 // Columns holds all SQL columns for author fields.
@@ -58,8 +58,6 @@ var (
 	DefaultCreatedAt time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt time.Time
-	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
-	UpdateDefaultUpdatedAt func() time.Time
 )
 
 // OrderOption defines the ordering options for the Author queries.
