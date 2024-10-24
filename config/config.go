@@ -1,7 +1,6 @@
 package config
 
 import (
-	"echo-clean/pkg/logger"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
@@ -33,7 +32,7 @@ func LoadConfig() (*Config, error) {
 
 	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
 	if err != nil {
-		logger.Debug("Error loading db port")
+		log.Println("Error loading db port")
 	}
 
 	dbConfig := DBConfig{

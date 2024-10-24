@@ -6,7 +6,6 @@ import (
 	"echo-clean/domain/repository"
 	"echo-clean/ent"
 	art "echo-clean/ent/article"
-	"echo-clean/pkg/logger"
 	"time"
 )
 
@@ -51,13 +50,6 @@ func (a ArticleRepository) Store(article *entity.Article, authorId int64) (*enti
 }
 
 func (a ArticleRepository) Fetch() ([]*entity.Article, error) {
-	aut, er := a.client.Author.Query().All(context.Background())
-	if er != nil {
-		logger.Debug("Cannot get data from author")
-	}
-
-	logger.Debug("author", aut)
-
 	articles, err := a.client.Article.Query().
 		WithAuthor().
 		All(context.Background())

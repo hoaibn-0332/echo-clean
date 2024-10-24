@@ -3,10 +3,10 @@ package database
 import (
 	"echo-clean/config"
 	"echo-clean/ent"
-	"echo-clean/pkg/logger"
 	"entgo.io/ent/dialect"
 	"fmt"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 func ConnectToPostgres(config config.DBConfig) (*ent.Client, error) {
@@ -16,9 +16,11 @@ func ConnectToPostgres(config config.DBConfig) (*ent.Client, error) {
 
 	db, err := ent.Open(dialect.Postgres, dns)
 	if err != nil {
+		log.Fatalf("Failed to openning connect to postgres %v", err)
 		return nil, err
+	} else {
+		log.Println("Connected to Postgres successfully")
 	}
 
-	logger.Info("Connected to Postgres successfully")
 	return db, nil
 }
