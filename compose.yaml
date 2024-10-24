@@ -1,10 +1,9 @@
-version: "3.7"
 services:
   app:
-    image: echo-clean
-    container_name: article_management_api
+    image: article_api
+    container_name: article_api
     ports:
-      - 8080:8080
+      - "8181:8181"
     depends_on:
       postgres:
         condition: service_healthy
@@ -14,17 +13,19 @@ services:
 
   postgres:
     image: postgres:15.1
-    container_name: go_clean_arch_postgres
-    volumes:
-      - ./article.sql:/docker-entrypoint-initdb.d/init.sql
+    container_name: article_postgres
+    user: ${DB_USER}
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_DB: article
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+    volumes:
+      - ./article.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: pg_isready -U user
+      test: pg_isready -U ${DB_USER} -d ${DB_NAME}
       timeout: 5s
       interval: 5s
       retries: 10

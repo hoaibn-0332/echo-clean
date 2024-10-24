@@ -51,21 +51,12 @@ func (a ArticleRepository) Store(article *entity.Article, authorId int64) (*enti
 }
 
 func (a ArticleRepository) Fetch() ([]*entity.Article, error) {
+	aut, er := a.client.Author.Query().All(context.Background())
+	if er != nil {
+		logger.Debug("Cannot get data from author")
+	}
 
-	in, e1 := a.client.Author.Create().
-		SetID(1).
-		SetName("Test 1").
-		SetCreatedAt(time.Now()).
-		SetUpdatedAt(time.Now()).
-		Save(context.Background())
-
-	logger.Debug("Insert success: ", e1 == nil)
-	logger.Debug("Data after insert: ", in)
-	logger.Error("Error insert: ", e1)
-
-	other, e := a.client.Author.Query().All(context.Background())
-	logger.Debug("Other nil", e == nil)
-	logger.Debug("Other", other)
+	logger.Debug("author", aut)
 
 	articles, err := a.client.Article.Query().
 		WithAuthor().

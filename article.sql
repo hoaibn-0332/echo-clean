@@ -1,13 +1,13 @@
-DO $$
-    BEGIN
-       IF EXISTS (SELECT 1 FROM pg_database WHERE datname = 'article') THEN
-          PERFORM pg_terminate_backend(pid)
-          FROM pg_stat_activity
-          WHERE datname = 'article';
-
-        EXECUTE 'DROP DATABASE article';
-    END IF;
-END $$;
+-- DO $$
+--     BEGIN
+--        IF EXISTS (SELECT 1 FROM pg_database WHERE datname = 'article') THEN
+--           PERFORM pg_terminate_backend(pid)
+--           FROM pg_stat_activity
+--           WHERE datname = 'article';
+--
+--         EXECUTE 'DROP DATABASE article';
+--     END IF;
+-- END $$;
 
 \c article;
 

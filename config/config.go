@@ -2,7 +2,10 @@ package config
 
 import (
 	"echo-clean/pkg/logger"
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
+	"log"
+	"os"
+	"strconv"
 )
 
 type DBConfig struct {
@@ -23,30 +26,30 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	viper.AutomaticEnv()
-	viper.SetConfigName("config.default")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./config")
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-	if err := viper.ReadInConfig(); err != nil {
-		logger.Error("Error reading config file, %s", err)
-		return nil, err
+	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+	if err != nil {
+		logger.Debug("Error loading db port")
 	}
 
 	dbConfig := DBConfig{
-		Host:     viper.GetString("db.host"),
-		Port:     viper.GetInt("db.port"),
-		User:     viper.GetString("db.user"),
-		Password: viper.GetString("db.password"),
-		DBName:   viper.GetString("db.name"),
-		SSLMode:  viper.GetString("db.sslmode"),
+		Host:     os.Getenv("DB_HOST"),
+		Port:     port,
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   os.Getenv("DB_NAME"),
+		SSLMode:  os.Getenv("DB_SSLMODE"),
 	}
 
 	config := Config{
-		AppName: viper.GetString("app.name"),
-		Port:    viper.GetString("app.port"),
-		Debug:   viper.GetBool("app.debug"),
-		Timeout: viper.GetInt("app.timeout"),
+		AppName: os.Getenv("APP_NAME"),
+		Port:    os.Getenv("APP_PORT"),
+		Debug:   true,
+		Timeout: 2,
 		Db:      dbConfig,
 	}
 

@@ -2,6 +2,8 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"time"
@@ -9,6 +11,13 @@ import (
 
 type Article struct {
 	ent.Schema
+}
+
+// Annotations of the Article.
+func (Article) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Table("article"),
+	}
 }
 
 func (Article) Fields() []ent.Field {
@@ -31,11 +40,12 @@ func (Article) Fields() []ent.Field {
 	}
 }
 
+// Edges of the Article.
 func (Article) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("author", Author.Type).
 			Ref("article").
 			Unique().
-			Required(),
+			Field("author_id"),
 	}
 }

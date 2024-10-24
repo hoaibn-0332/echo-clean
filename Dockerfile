@@ -15,12 +15,13 @@ FROM alpine:latest
 
 RUN apk update && apk upgrade && \
     apk --update --no-cache add tzdata && \
-    mkdir /app 
+    mkdir /app
 
-WORKDIR /app 
+WORKDIR /app
 
 EXPOSE 9090
 
 COPY --from=builder /app/engine /app/
+COPY --from=builder /app/.env /app/
 
 CMD /app/engine
