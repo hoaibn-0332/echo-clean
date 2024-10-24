@@ -46,6 +46,6 @@ func (Article) Edges() []ent.Edge {
 		edge.From("author", Author.Type).
 			Ref("article").
 			Unique().
-			Field("author_id"),
+			Required(),
 	}
 }
