@@ -29,6 +29,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			article.FieldTitle:     {Type: field.TypeString, Column: article.FieldTitle},
 			article.FieldContent:   {Type: field.TypeString, Column: article.FieldContent},
+			article.FieldAuthorID:  {Type: field.TypeInt64, Column: article.FieldAuthorID},
 			article.FieldCreatedAt: {Type: field.TypeTime, Column: article.FieldCreatedAt},
 			article.FieldUpdatedAt: {Type: field.TypeTime, Column: article.FieldUpdatedAt},
 		},
@@ -130,6 +131,11 @@ func (f *ArticleFilter) WhereTitle(p entql.StringP) {
 // WhereContent applies the entql string predicate on the content field.
 func (f *ArticleFilter) WhereContent(p entql.StringP) {
 	f.Where(p.Field(article.FieldContent))
+}
+
+// WhereAuthorID applies the entql int64 predicate on the author_id field.
+func (f *ArticleFilter) WhereAuthorID(p entql.Int64P) {
+	f.Where(p.Field(article.FieldAuthorID))
 }
 
 // WhereCreatedAt applies the entql time.Time predicate on the created_at field.

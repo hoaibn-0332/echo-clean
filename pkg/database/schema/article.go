@@ -31,6 +31,8 @@ func (Article) Fields() []ent.Field {
 			StructTag(`json:"title,omitempty"`),
 		field.String("content").
 			StructTag(`json:"content,omitempty"`),
+		field.Int64("author_id").
+			StructTag(`json:"author_id,omitempty"`),
 		field.Time("created_at").
 			Default(time.Now).
 			StructTag(`json:"created_at,omitempty"`),
@@ -46,6 +48,7 @@ func (Article) Edges() []ent.Edge {
 		edge.From("author", Author.Type).
 			Ref("article").
 			Unique().
-			Required(),
+			Required().
+			Field("author_id"),
 	}
 }

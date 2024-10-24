@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS article (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO author (name)
-VALUES ('John Doe');
+INSERT INTO author (id, name, created_at, updated_at)
+VALUES (1, 'John Doe', '2017-05-18 13:50:19','2017-05-18 13:50:19');
 
-INSERT INTO article (title, content, author_id)
-VALUES ('First Article', 'This is the content of the first article.', 1)
+INSERT INTO article (title, content, author_id, created_at, updated_at)
+VALUES ('First Article', 'This is the content of the first article.', 1, '2017-05-18 13:50:19','2017-05-18 13:50:19')
     ON CONFLICT (id) DO NOTHING;

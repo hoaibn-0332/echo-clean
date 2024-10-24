@@ -24,7 +24,6 @@ type ArticleQuery struct {
 	inters     []Interceptor
 	predicates []predicate.Article
 	withAuthor *AuthorQuery
-	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -370,18 +369,11 @@ func (aq *ArticleQuery) prepareQuery(ctx context.Context) error {
 func (aq *ArticleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Article, error) {
 	var (
 		nodes       = []*Article{}
-		withFKs     = aq.withFKs
 		_spec       = aq.querySpec()
 		loadedTypes = [1]bool{
 			aq.withAuthor != nil,
 		}
 	)
-	if aq.withAuthor != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, article.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Article).scanValues(nil, columns)
 	}
@@ -413,10 +405,7 @@ func (aq *ArticleQuery) loadAuthor(ctx context.Context, query *AuthorQuery, node
 	ids := make([]int64, 0, len(nodes))
 	nodeids := make(map[int64][]*Article)
 	for i := range nodes {
-		if nodes[i].author_article == nil {
-			continue
-		}
-		fk := *nodes[i].author_article
+		fk := nodes[i].AuthorID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -433,7 +422,7 @@ func (aq *ArticleQuery) loadAuthor(ctx context.Context, query *AuthorQuery, node
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "author_article" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "author_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -466,6 +455,9 @@ func (aq *ArticleQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != article.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if aq.withAuthor != nil {
+			_spec.Node.AddColumnOnce(article.FieldAuthorID)
 		}
 	}
 	if ps := aq.predicates; len(ps) > 0 {

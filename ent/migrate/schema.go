@@ -16,7 +16,7 @@ var (
 		{Name: "content", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "author_article", Type: field.TypeInt64},
+		{Name: "author_id", Type: field.TypeInt64},
 	}
 	// ArticleTable holds the schema information for the "article" table.
 	ArticleTable = &schema.Table{

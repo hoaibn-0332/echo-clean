@@ -57,6 +57,20 @@ func (au *ArticleUpdate) SetNillableContent(s *string) *ArticleUpdate {
 	return au
 }
 
+// SetAuthorID sets the "author_id" field.
+func (au *ArticleUpdate) SetAuthorID(i int64) *ArticleUpdate {
+	au.mutation.SetAuthorID(i)
+	return au
+}
+
+// SetNillableAuthorID sets the "author_id" field if the given value is not nil.
+func (au *ArticleUpdate) SetNillableAuthorID(i *int64) *ArticleUpdate {
+	if i != nil {
+		au.SetAuthorID(*i)
+	}
+	return au
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (au *ArticleUpdate) SetCreatedAt(t time.Time) *ArticleUpdate {
 	au.mutation.SetCreatedAt(t)
@@ -82,12 +96,6 @@ func (au *ArticleUpdate) SetNillableUpdatedAt(t *time.Time) *ArticleUpdate {
 	if t != nil {
 		au.SetUpdatedAt(*t)
 	}
-	return au
-}
-
-// SetAuthorID sets the "author" edge to the Author entity by ID.
-func (au *ArticleUpdate) SetAuthorID(id int64) *ArticleUpdate {
-	au.mutation.SetAuthorID(id)
 	return au
 }
 
@@ -248,6 +256,20 @@ func (auo *ArticleUpdateOne) SetNillableContent(s *string) *ArticleUpdateOne {
 	return auo
 }
 
+// SetAuthorID sets the "author_id" field.
+func (auo *ArticleUpdateOne) SetAuthorID(i int64) *ArticleUpdateOne {
+	auo.mutation.SetAuthorID(i)
+	return auo
+}
+
+// SetNillableAuthorID sets the "author_id" field if the given value is not nil.
+func (auo *ArticleUpdateOne) SetNillableAuthorID(i *int64) *ArticleUpdateOne {
+	if i != nil {
+		auo.SetAuthorID(*i)
+	}
+	return auo
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (auo *ArticleUpdateOne) SetCreatedAt(t time.Time) *ArticleUpdateOne {
 	auo.mutation.SetCreatedAt(t)
@@ -273,12 +295,6 @@ func (auo *ArticleUpdateOne) SetNillableUpdatedAt(t *time.Time) *ArticleUpdateOn
 	if t != nil {
 		auo.SetUpdatedAt(*t)
 	}
-	return auo
-}
-
-// SetAuthorID sets the "author" edge to the Author entity by ID.
-func (auo *ArticleUpdateOne) SetAuthorID(id int64) *ArticleUpdateOne {
-	auo.mutation.SetAuthorID(id)
 	return auo
 }
 

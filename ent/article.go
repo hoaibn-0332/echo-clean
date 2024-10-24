@@ -22,15 +22,16 @@ type Article struct {
 	Title string `json:"title,omitempty"`
 	// Content holds the value of the "content" field.
 	Content string `json:"content,omitempty"`
+	// AuthorID holds the value of the "author_id" field.
+	AuthorID int64 `json:"author_id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ArticleQuery when eager-loading is set.
-	Edges          ArticleEdges `json:"edges"`
-	author_article *int64
-	selectValues   sql.SelectValues
+	Edges        ArticleEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // ArticleEdges holds the relations/edges for other nodes in the graph.
@@ -58,14 +59,12 @@ func (*Article) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case article.FieldID:
+		case article.FieldID, article.FieldAuthorID:
 			values[i] = new(sql.NullInt64)
 		case article.FieldTitle, article.FieldContent:
 			values[i] = new(sql.NullString)
 		case article.FieldCreatedAt, article.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case article.ForeignKeys[0]: // author_article
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -99,6 +98,12 @@ func (a *Article) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.Content = value.String
 			}
+		case article.FieldAuthorID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field author_id", values[i])
+			} else if value.Valid {
+				a.AuthorID = value.Int64
+			}
 		case article.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -110,13 +115,6 @@ func (a *Article) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				a.UpdatedAt = value.Time
-			}
-		case article.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field author_article", value)
-			} else if value.Valid {
-				a.author_article = new(int64)
-				*a.author_article = int64(value.Int64)
 			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
@@ -164,6 +162,9 @@ func (a *Article) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("content=")
 	builder.WriteString(a.Content)
+	builder.WriteString(", ")
+	builder.WriteString("author_id=")
+	builder.WriteString(fmt.Sprintf("%v", a.AuthorID))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(a.CreatedAt.Format(time.ANSIC))

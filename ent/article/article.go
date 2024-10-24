@@ -18,6 +18,8 @@ const (
 	FieldTitle = "title"
 	// FieldContent holds the string denoting the content field in the database.
 	FieldContent = "content"
+	// FieldAuthorID holds the string denoting the author_id field in the database.
+	FieldAuthorID = "author_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -32,7 +34,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "author" package.
 	AuthorInverseTable = "author"
 	// AuthorColumn is the table column denoting the author relation/edge.
-	AuthorColumn = "author_article"
+	AuthorColumn = "author_id"
 )
 
 // Columns holds all SQL columns for article fields.
@@ -40,25 +42,15 @@ var Columns = []string{
 	FieldID,
 	FieldTitle,
 	FieldContent,
+	FieldAuthorID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "article"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"author_article",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -90,6 +82,11 @@ func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 // ByContent orders the results by the content field.
 func ByContent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldContent, opts...).ToFunc()
+}
+
+// ByAuthorID orders the results by the author_id field.
+func ByAuthorID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAuthorID, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

@@ -33,6 +33,12 @@ func (ac *ArticleCreate) SetContent(s string) *ArticleCreate {
 	return ac
 }
 
+// SetAuthorID sets the "author_id" field.
+func (ac *ArticleCreate) SetAuthorID(i int64) *ArticleCreate {
+	ac.mutation.SetAuthorID(i)
+	return ac
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (ac *ArticleCreate) SetCreatedAt(t time.Time) *ArticleCreate {
 	ac.mutation.SetCreatedAt(t)
@@ -64,12 +70,6 @@ func (ac *ArticleCreate) SetNillableUpdatedAt(t *time.Time) *ArticleCreate {
 // SetID sets the "id" field.
 func (ac *ArticleCreate) SetID(i int64) *ArticleCreate {
 	ac.mutation.SetID(i)
-	return ac
-}
-
-// SetAuthorID sets the "author" edge to the Author entity by ID.
-func (ac *ArticleCreate) SetAuthorID(id int64) *ArticleCreate {
-	ac.mutation.SetAuthorID(id)
 	return ac
 }
 
@@ -135,6 +135,9 @@ func (ac *ArticleCreate) check() error {
 	}
 	if _, ok := ac.mutation.Content(); !ok {
 		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "Article.content"`)}
+	}
+	if _, ok := ac.mutation.AuthorID(); !ok {
+		return &ValidationError{Name: "author_id", err: errors.New(`ent: missing required field "Article.author_id"`)}
 	}
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Article.created_at"`)}
@@ -207,7 +210,7 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.author_article = &nodes[0]
+		_node.AuthorID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

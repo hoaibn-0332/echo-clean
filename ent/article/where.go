@@ -65,6 +65,11 @@ func Content(v string) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldContent, v))
 }
 
+// AuthorID applies equality check predicate on the "author_id" field. It's identical to AuthorIDEQ.
+func AuthorID(v int64) predicate.Article {
+	return predicate.Article(sql.FieldEQ(FieldAuthorID, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldCreatedAt, v))
@@ -203,6 +208,26 @@ func ContentEqualFold(v string) predicate.Article {
 // ContentContainsFold applies the ContainsFold predicate on the "content" field.
 func ContentContainsFold(v string) predicate.Article {
 	return predicate.Article(sql.FieldContainsFold(FieldContent, v))
+}
+
+// AuthorIDEQ applies the EQ predicate on the "author_id" field.
+func AuthorIDEQ(v int64) predicate.Article {
+	return predicate.Article(sql.FieldEQ(FieldAuthorID, v))
+}
+
+// AuthorIDNEQ applies the NEQ predicate on the "author_id" field.
+func AuthorIDNEQ(v int64) predicate.Article {
+	return predicate.Article(sql.FieldNEQ(FieldAuthorID, v))
+}
+
+// AuthorIDIn applies the In predicate on the "author_id" field.
+func AuthorIDIn(vs ...int64) predicate.Article {
+	return predicate.Article(sql.FieldIn(FieldAuthorID, vs...))
+}
+
+// AuthorIDNotIn applies the NotIn predicate on the "author_id" field.
+func AuthorIDNotIn(vs ...int64) predicate.Article {
+	return predicate.Article(sql.FieldNotIn(FieldAuthorID, vs...))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
