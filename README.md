@@ -1,32 +1,4 @@
-# go-clean-arch
-
-## Changelog
-
-- **v1**: checkout to the [v1 branch](https://echo-clean/tree/v1) <br>
-  Proposed on 2017, archived to v1 branch on 2018 <br>
-  Desc: Initial proposal by me. The story can be read here: https://medium.com/@imantumorang/golang-clean-archithecture-efd6d7c43047
-
-- **v2**: checkout to the [v2 branch](https://echo-clean/tree/v2) <br>
-  Proposed on 2018, archived to v2 branch on 2020 <br>
-  Desc: Improvement from v1. The story can be read here: https://medium.com/@imantumorang/trying-clean-architecture-on-golang-2-44d615bf8fdf
-
-- **v3**: checkout to the [v3 branch](https://echo-clean/tree/v3) <br>
-  Proposed on 2019, merged to master on 2020. <br>
-  Desc: Introducing Domain package, the details can be seen on this PR [#21](https://echo-clean/pull/21)
-
-- **v4**: master branch
-  Proposed on 2024, merged to master on 2024. <br>
-  Desc:
-
-  - Declare Interfaces to the consuming side,
-  - Introduce `internal` package
-  - Introduce `Service-focused` package.
-
-  Details can be seen in this PR [#88](https://echo-clean/pull/88).<br>
-
-> ### Author's Note
->
-> You may notice it diverges from the structures seen in previous versions. I encourage you to explore the branches for each version to select the structure that appeals to you the most. In my recent projects, the code structure has progressed to version 4. However, I do not strictly advocate for one version over another. You may encounter alternative examples on the internet that align more closely with your preferences. Rest assured, the foundational concept will remain consistent or at least bear resemblance. The differences are primarily in the arrangement of directories or the integration of advanced tools directly into the setup.
+# echo-clean-arch
 
 ## Description
 
