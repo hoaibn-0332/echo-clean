@@ -1,13 +1,11 @@
 package server
 
 import (
-	"context"
-	"echo-clean/app/handler"
-	"echo-clean/app/route"
 	"echo-clean/config"
 	"echo-clean/domain/service"
-	"echo-clean/pkg/database"
-	"echo-clean/pkg/repository"
+	"echo-clean/infra/database"
+	repository2 "echo-clean/infra/repository"
+	"echo-clean/server/handler"
 	"github.com/labstack/echo/v4"
 	"log"
 	"time"
@@ -32,8 +30,8 @@ func NewServer(cfg *config.Config) *Server {
 	}
 
 	// Initialize repository
-	articleRepository := repository.NewArticleRepository(client)
-	authorRepository := repository.NewAuthorRepository(client)
+	articleRepository := repository2.NewArticleRepository(client)
+	authorRepository := repository2.NewAuthorRepository(client)
 
 	// Initialize service
 	articleService := service.NewArticleService(articleRepository, authorRepository)
@@ -42,31 +40,9 @@ func NewServer(cfg *config.Config) *Server {
 	articleHandler := handler.NewArticleHandler(*articleService)
 
 	//Register routes
-	route.RegisterRoutes(e, articleHandler)
+	RegisterRoutes(e, articleHandler)
 
 	return &Server{
 		Echo: e,
-	}
-}
-
-// SetRequestContextWithTimeout will set the request context with timeout for every incoming HTTP Request
-func SetRequestContextWithTimeout(d time.Duration) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			ctx, cancel := context.WithTimeout(c.Request().Context(), d)
-			defer cancel()
-
-			newRequest := c.Request().WithContext(ctx)
-			c.SetRequest(newRequest)
-			return next(c)
-		}
-	}
-}
-
-// SetCORS will handle the CORS middleware
-func SetCORS(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		c.Response().Header().Set("Access-Control-Allow-Origin", "*")
-		return next(c)
 	}
 }

@@ -53,7 +53,7 @@ lint: $(GOLANGCI) ## Runs golangci-lint with predefined configuration
 #
 # todo(butuzov): add additional flags to compiler to have an `version` flag.
 build: ## Builds binary
-	@ printf "Building aplication... "
+	@ printf "Building application... "
 	@ go build \
 		-trimpath  \
 		-o engine \
@@ -62,7 +62,7 @@ build: ## Builds binary
 
 
 build-race: ## Builds binary (with -race flag)
-	@ printf "Building aplication with race flag... "
+	@ printf "Building application with race flag... "
 	@ go build \
 		-trimpath  \
 		-race      \

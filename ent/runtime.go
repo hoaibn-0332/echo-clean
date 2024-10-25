@@ -5,7 +5,7 @@ package ent
 import (
 	"echo-clean/ent/article"
 	"echo-clean/ent/author"
-	"echo-clean/pkg/database/schema"
+	"echo-clean/infra/database/schema"
 	"time"
 )
 

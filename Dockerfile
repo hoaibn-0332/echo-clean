@@ -19,7 +19,7 @@ RUN apk update && apk upgrade && \
 
 WORKDIR /app
 
-EXPOSE 9090
+EXPOSE 8181
 
 COPY --from=builder /app/engine /app/
 COPY --from=builder /app/.env /app/

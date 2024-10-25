@@ -1,32 +1,4 @@
-# go-clean-arch
-
-## Changelog
-
-- **v1**: checkout to the [v1 branch](https://echo-clean/tree/v1) <br>
-  Proposed on 2017, archived to v1 branch on 2018 <br>
-  Desc: Initial proposal by me. The story can be read here: https://medium.com/@imantumorang/golang-clean-archithecture-efd6d7c43047
-
-- **v2**: checkout to the [v2 branch](https://echo-clean/tree/v2) <br>
-  Proposed on 2018, archived to v2 branch on 2020 <br>
-  Desc: Improvement from v1. The story can be read here: https://medium.com/@imantumorang/trying-clean-architecture-on-golang-2-44d615bf8fdf
-
-- **v3**: checkout to the [v3 branch](https://echo-clean/tree/v3) <br>
-  Proposed on 2019, merged to master on 2020. <br>
-  Desc: Introducing Domain package, the details can be seen on this PR [#21](https://echo-clean/pull/21)
-
-- **v4**: master branch
-  Proposed on 2024, merged to master on 2024. <br>
-  Desc:
-
-  - Declare Interfaces to the consuming side,
-  - Introduce `internal` package
-  - Introduce `Service-focused` package.
-
-  Details can be seen in this PR [#88](https://echo-clean/pull/88).<br>
-
-> ### Author's Note
->
-> You may notice it diverges from the structures seen in previous versions. I encourage you to explore the branches for each version to select the structure that appeals to you the most. In my recent projects, the code structure has progressed to version 4. However, I do not strictly advocate for one version over another. You may encounter alternative examples on the internet that align more closely with your preferences. Rest assured, the foundational concept will remain consistent or at least bear resemblance. The differences are primarily in the arrangement of directories or the integration of advanced tools directly into the setup.
+# echo-clean-arch
 
 ## Description
 
@@ -51,7 +23,7 @@ This project has 4 Domain layer :
 
 #### The diagram:
 
-![golang clean architecture](https://echo-clean/raw/master/clean-arch.png)
+![golang clean architecture](https://github.com/hoaibn-0332/echo-clean/blob/main/echo-clean.png)
 
 The original explanation about this project's structure can read from this medium's post : https://medium.com/@imantumorang/golang-clean-archithecture-efd6d7c43047.
 It may be different already, but the concept still the same in application level, also you can see the change log from v1 to current version in Master.
@@ -77,26 +49,19 @@ Here is the steps to run it with `docker-compose`
 $ cd workspace
 
 # Clone into your workspace
-$ git clone https://echo-clean.git
+$ git clone https://github.com/hoaibn-0332/echo-clean.git
 
 #move to project
-$ cd go-clean-arch
+$ cd echo-clean
 
 # copy the example.env to .env
 $ cp example.env .env
 
 # Run the application
-$ make up
+$ docker-compose up
 
 # The hot reload will running
 
 # Execute the call in another terminal
-$ curl localhost:9090/articles
+$ curl localhost:8181/articles
 ```
-
-### Tools Used:
-
-In this project, I use some tools listed below. But you can use any similar library that have the same purposes. But, well, different library will have different implementation type. Just be creative and use anything that you really need.
-
-- All libraries listed in [`go.mod`](https://echo-clean/blob/master/go.mod)
-- ["github.com/vektra/mockery".](https://github.com/vektra/mockery) To Generate Mocks for testing needs.
