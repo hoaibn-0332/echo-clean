@@ -10,11 +10,6 @@ type Error struct {
 	Code    int    `json:"error_code"`
 }
 
-type Errors struct {
-	Errors     []Error
-	HttpStatus int
-}
-
 func (err *Error) ToJsonError(other ...Error) string {
 	errs := append(other, *err)
 	jsonData, e := json.Marshal(errs)
