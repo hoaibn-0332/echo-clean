@@ -66,6 +66,9 @@ $ docker-compose up
 $ curl localhost:8080/articles
 ```
 
+### API Documentation
+[Swagger](https://hoaibn-0332.github.io/echo-clean/swagger/)
+
 ## Dependencies
 
 Echo-Clean is built using the Go programming language and leverages a number of open-source libraries to provide its
