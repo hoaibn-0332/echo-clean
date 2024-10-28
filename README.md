@@ -23,7 +23,7 @@ This project has 4 Domain layer :
 
 #### The diagram:
 
-![golang clean architecture](https://github.com/hoaibn-0332/echo-clean/blob/main/echo-clean.png)
+![golang clean architecture](https://github.com/hoaibn-0332/echo-clean/blob/main/echo-clean.jpg)
 
 The original explanation about this project's structure can read from this medium's post : https://medium.com/@imantumorang/golang-clean-archithecture-efd6d7c43047.
 It may be different already, but the concept still the same in application level, also you can see the change log from v1 to current version in Master.
@@ -63,5 +63,15 @@ $ docker-compose up
 # The hot reload will running
 
 # Execute the call in another terminal
-$ curl localhost:8181/articles
+$ curl localhost:8080/articles
 ```
+
+## Dependencies
+
+Echo-Clean is built using the Go programming language and leverages a number of open-source libraries to provide its
+core functionality. Some of the key dependencies include:
+
+- [Echo](https://github.com/labstack/echo)
+- [ORM](https://entgo.io/)
+- [OpenAPI](https://github.com/deepmap/oapi-codegen)
+- [Logger](https://github.com/rs/zerolog)

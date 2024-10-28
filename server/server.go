@@ -7,7 +7,7 @@ import (
 	repository2 "echo-clean/infra/repository"
 	"echo-clean/server/handler"
 	"github.com/labstack/echo/v4"
-	"log"
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
@@ -22,11 +22,12 @@ func NewServer(cfg *config.Config) *Server {
 
 	e.Use(SetCORS)
 	e.Use(SetRequestContextWithTimeout(timeoutContext))
+	e.Use(SessionMiddleware)
 
 	// Connect to Postgres
 	client, err := database.ConnectToPostgres(cfg.Db)
 	if err != nil {
-		log.Fatalf("Failed to connect to database, %s", err)
+		log.Fatal().Msgf("Failed to connect to database, %s", err)
 	}
 
 	// Initialize repository

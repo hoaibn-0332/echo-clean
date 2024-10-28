@@ -2,7 +2,7 @@ package error
 
 import (
 	"encoding/json"
-	"log"
+	"github.com/rs/zerolog/log"
 )
 
 type Error struct {
@@ -19,7 +19,7 @@ func (err *Error) ToJsonError(other ...Error) string {
 	errs := append(other, *err)
 	jsonData, e := json.Marshal(errs)
 	if e != nil {
-		log.Printf("Error when marshalling error: %e", e)
+		log.Debug().Msgf("Error when marshalling error: %e", e)
 		return ""
 	}
 
@@ -38,4 +38,7 @@ var (
 var (
 	// StatusBadRequestError Invalid input data.
 	StatusBadRequestError = Error{Message: "Invalid input data.", Code: 40000}
+
+	// UnsupportedMediaTypeError Unsupported media type.
+	UnsupportedMediaTypeError = Error{Message: "Unsupported media type.", Code: 41500}
 )

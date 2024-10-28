@@ -6,6 +6,7 @@ import (
 	"echo-clean/domain/repository"
 	"echo-clean/ent"
 	art "echo-clean/ent/article"
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
@@ -53,6 +54,8 @@ func (a ArticleRepository) Fetch() ([]*entity.Article, error) {
 	articles, err := a.client.Article.Query().
 		WithAuthor().
 		All(context.Background())
+
+	log.Debug().Msgf("Query error: %v", err)
 
 	if err != nil {
 		return nil, err

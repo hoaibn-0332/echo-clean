@@ -4,8 +4,8 @@ import (
 	"echo-clean/domain/entity"
 	sysErrors "echo-clean/domain/error"
 	"echo-clean/domain/repository"
-	"errors"
 	"github.com/go-playground/validator/v10"
+	"github.com/rs/zerolog/log"
 )
 
 type ArticleService struct {
@@ -21,7 +21,7 @@ func NewArticleService(article repository.ArticleRepository, author repository.A
 	}
 }
 
-func (a *ArticleService) Fetch() ([]*entity.Article, error) {
+func (a *ArticleService) Fetch() ([]*entity.Article, []sysErrors.Error) {
 	article, err := a.article.Fetch()
 	if err != nil {
 		return nil, a.base.HandleDbError(err)
@@ -30,11 +30,13 @@ func (a *ArticleService) Fetch() ([]*entity.Article, error) {
 	return article, nil
 }
 
-func (a *ArticleService) Store(article *entity.Article) (*entity.Article, error) {
+func (a *ArticleService) Store(article *entity.Article) (*entity.Article, []sysErrors.Error) {
 	validate := validator.New()
 	err := validate.Struct(article)
+	log.Debug().Msgf("Validation error: %v", err)
+
 	if err != nil {
-		return nil, errors.New(sysErrors.StatusBadRequestError.ToJsonError())
+		return nil, []sysErrors.Error{sysErrors.StatusBadRequestError}
 	}
 
 	authors, err := a.author.Fetch()

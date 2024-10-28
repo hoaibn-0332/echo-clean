@@ -27,3 +27,15 @@ func SetCORS(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
+
+// SessionMiddleware Set session tenant id to Postgresql when use multi-tenant and RLS
+func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// handle input
+
+		// set session tenant id to Postgresql
+
+		// put data input to context for next handler
+		return next(c)
+	}
+}
