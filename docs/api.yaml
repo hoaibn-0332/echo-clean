@@ -1,0 +1,174 @@
+openapi: 3.0.0
+info:
+  title: Echo Clean API
+  description: API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Check if the system is running
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Success, the system is operational
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /articles:
+    get:
+      summary: Get list of articles
+      description: Fetches a list of articles with their authors
+      operationId: getArticles
+      responses:
+        '200':
+          description: List of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request, error occurred
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a new article
+      description: Creates a new article with the provided data
+      operationId: createArticle
+      requestBody:
+        description: Article data to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+              properties:
+                title:
+                  type: string
+                  example: "test"
+                content:
+                  type: string
+                  example: "Content test"
+      responses:
+        '201':
+          description: Article created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request, invalid input data or database error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Error'
+              examples:
+                InvalidInput:
+                  value:
+                    - error_message: "Invalid input data."
+                      error_code: 40000
+                DatabaseError:
+                  value:
+                    - error_message: "Internal Server Error"
+                      error_code: 10001
+        '415':
+          description: Unsupported Media Type, request body is not in JSON format
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Error'
+              example:
+                - error_message: "Unsupported Media Type."
+                  error_code: 41500
+
+
+components:
+  responses:
+    InternalServerError:
+      description: A generic internal server error.
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: "Internal Server Error"
+    BadGatewayError:
+      description: Bad gateway, the server received an invalid response.
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: "Bad Gateway"
+  schemas:
+    Article:
+      type: object
+      required:
+        - title
+        - content
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "First Article"
+        content:
+          type: string
+          example: "This is the content of the first article."
+        author:
+          $ref: '#/components/schemas/Author'
+        updated_at:
+          type: string
+          format: date-time
+          example: "2017-05-18T13:50:19Z"
+        created_at:
+          type: string
+          format: date-time
+          example: "2017-05-18T13:50:19Z"
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        created_at:
+          type: string
+          format: date-time
+          example: "2017-05-18T13:50:19Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2017-05-18T13:50:19Z"
+    Error:
+      type: object
+      properties:
+        error_message:
+          type: string
+          example: "Internal Server Error"
+        error_code:
+          type: integer
+          example: 10001

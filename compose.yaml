@@ -3,7 +3,7 @@ services:
     image: article_api
     container_name: article_api
     ports:
-      - "8181:8181"
+      - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy

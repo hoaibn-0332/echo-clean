@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/joho/godotenv"
-	"log"
+	"github.com/rs/zerolog/log"
 	"os"
 	"strconv"
 )
@@ -14,6 +14,8 @@ type DBConfig struct {
 	Password string
 	DBName   string
 	SSLMode  string
+	MaxCons  int
+	MaxIdle  int
 }
 
 type Config struct {
@@ -27,12 +29,22 @@ type Config struct {
 func LoadConfig() (*Config, error) {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal().Msgf("Error loading .env file")
 	}
 
 	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
 	if err != nil {
-		log.Println("Error loading db port")
+		log.Debug().Msg("Error loading db port")
+	}
+
+	maxCons, err := strconv.Atoi(os.Getenv("DB_MAX_OPEN_CONNS"))
+	if err != nil {
+		log.Debug().Msg("Error loading db max open conns")
+	}
+
+	maxIdle, err := strconv.Atoi(os.Getenv("DB_MAX_IDLE_CONNS"))
+	if err != nil {
+		log.Debug().Msg("Error loading db max idle conns")
 	}
 
 	dbConfig := DBConfig{
@@ -42,6 +54,8 @@ func LoadConfig() (*Config, error) {
 		Password: os.Getenv("DB_PASSWORD"),
 		DBName:   os.Getenv("DB_NAME"),
 		SSLMode:  os.Getenv("DB_SSLMODE"),
+		MaxCons:  maxCons,
+		MaxIdle:  maxIdle,
 	}
 
 	config := Config{
