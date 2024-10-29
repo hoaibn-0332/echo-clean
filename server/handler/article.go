@@ -2,7 +2,7 @@ package handler
 
 import (
 	"echo-clean/domain/entity"
-	serviceError "echo-clean/domain/error"
+	serviceErrors "echo-clean/domain/error"
 	"echo-clean/domain/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -30,7 +30,7 @@ func (a *ArticleHandler) FetchArticle(c echo.Context) error {
 func (a *ArticleHandler) Store(c echo.Context) error {
 	article := new(entity.Article)
 	if err := c.Bind(&article); err != nil {
-		return c.JSON(http.StatusUnsupportedMediaType, []serviceError.Error{serviceError.UnsupportedMediaTypeError})
+		return c.JSON(http.StatusUnsupportedMediaType, []serviceErrors.Error{serviceErrors.UnsupportedMediaTypeError})
 	}
 
 	createdArticle, err := a.Service.Store(article)

@@ -38,7 +38,7 @@ func NewServer(cfg *config.Config) *Server {
 	articleService := service.NewArticleService(articleRepository, authorRepository)
 
 	//Initialize handler
-	articleHandler := handler.NewArticleHandler(*articleService)
+	articleHandler := handler.NewArticleHandler(articleService)
 
 	//Register routes
 	RegisterRoutes(e, articleHandler)
