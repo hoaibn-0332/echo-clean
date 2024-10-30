@@ -40,8 +40,11 @@ func NewServer(cfg *config.Config) *Server {
 	//Initialize handler
 	articleHandler := handler.NewArticleHandler(articleService)
 
+	// Init handlers
+	handlers := NewHandlers(articleHandler)
+
 	//Register routes
-	RegisterRoutes(e, articleHandler)
+	RegisterRoutes(e, handlers)
 
 	return &Server{
 		Echo: e,
