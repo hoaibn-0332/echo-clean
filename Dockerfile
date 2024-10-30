@@ -21,7 +21,6 @@ WORKDIR /app
 
 EXPOSE 8080
 
-COPY --from=builder /app/engine /app/
-COPY --from=builder /app/.env /app/
+COPY --from=builder /app/engine /app/.env /app/
 
 CMD /app/engine
