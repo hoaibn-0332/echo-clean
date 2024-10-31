@@ -8,12 +8,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// ArticleServiceImpl is the implementation of the ArticleService interface
 type ArticleServiceImpl struct {
 	base    BaseService
 	article repository.ArticleRepository
 	author  repository.AuthorRepository
 }
 
+// NewArticleService creates a new instance of the ArticleServiceImpl
 func NewArticleService(article repository.ArticleRepository, author repository.AuthorRepository) ArticleService {
 	return &ArticleServiceImpl{
 		base:    BaseService{},
@@ -22,6 +24,7 @@ func NewArticleService(article repository.ArticleRepository, author repository.A
 	}
 }
 
+// Fetch fetches all articles
 func (a ArticleServiceImpl) Fetch() ([]*entity.Article, []serviceErrors.Error) {
 	article, err := a.article.Fetch()
 	if err != nil {
@@ -31,6 +34,7 @@ func (a ArticleServiceImpl) Fetch() ([]*entity.Article, []serviceErrors.Error) {
 	return article, nil
 }
 
+// Store stores an article
 func (a ArticleServiceImpl) Store(article *entity.Article) (*entity.Article, []serviceErrors.Error) {
 	validate := validator.New()
 	err := validate.Struct(article)

@@ -10,10 +10,12 @@ import (
 	"time"
 )
 
+// ArticleRepository is the implementation of the ArticleRepository interface
 type ArticleRepository struct {
 	client *ent.Client
 }
 
+// ParserArticle is a function to parse author entity to author domain
 func ParserArticle(article *ent.Article) *entity.Article {
 	return &entity.Article{
 		ID:        article.ID,
@@ -25,6 +27,7 @@ func ParserArticle(article *ent.Article) *entity.Article {
 	}
 }
 
+// Store is a function to parse author entity to author domain
 func (a ArticleRepository) Store(article *entity.Article, authorId int64) (*entity.Article, error) {
 	ar, err := a.client.Article.Create().
 		SetTitle(article.Title).
@@ -50,6 +53,7 @@ func (a ArticleRepository) Store(article *entity.Article, authorId int64) (*enti
 	return ParserArticle(fullAr), nil
 }
 
+// Fetch is a function to parse author entity to author domain
 func (a ArticleRepository) Fetch() ([]*entity.Article, error) {
 	articles, err := a.client.Article.Query().
 		WithAuthor().
@@ -69,6 +73,7 @@ func (a ArticleRepository) Fetch() ([]*entity.Article, error) {
 	return result, nil
 }
 
+// GetByID is a function to parse author entity to author domain
 func (a ArticleRepository) GetByID(id int64) (*entity.Article, error) {
 	article, err := a.client.Article.Query().
 		Where(art.IDEQ(id)).
@@ -82,6 +87,7 @@ func (a ArticleRepository) GetByID(id int64) (*entity.Article, error) {
 	return ParserArticle(article), nil
 }
 
+// GetByTitle is a function to parse author entity to author domain
 func (a ArticleRepository) GetByTitle(title string) (*entity.Article, error) {
 	article, err := a.client.Article.Query().
 		Where(art.TitleEQ(title)).
@@ -95,6 +101,7 @@ func (a ArticleRepository) GetByTitle(title string) (*entity.Article, error) {
 	return ParserArticle(article), nil
 }
 
+// Update is a function to parse author entity to author domain
 func (a ArticleRepository) Update(article *entity.Article) (*entity.Article, error) {
 	ar, err := a.client.Article.UpdateOneID(article.ID).
 		SetTitle(article.Title).
@@ -108,6 +115,7 @@ func (a ArticleRepository) Update(article *entity.Article) (*entity.Article, err
 	return ParserArticle(ar), nil
 }
 
+// Delete is a function to parse author entity to author domain
 func (a ArticleRepository) Delete(id int64) error {
 	err := a.client.Article.DeleteOneID(id).
 		Exec(context.Background())
@@ -119,6 +127,7 @@ func (a ArticleRepository) Delete(id int64) error {
 	return nil
 }
 
+// NewArticleRepository is a function to parse author entity to author domain
 func NewArticleRepository(client *ent.Client) repository.ArticleRepository {
 	return &ArticleRepository{
 		client: client,

@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Article schema.
 type Article struct {
 	ent.Schema
 }
@@ -20,6 +21,7 @@ func (Article) Annotations() []schema.Annotation {
 	}
 }
 
+// Fields of the Article.
 func (Article) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").

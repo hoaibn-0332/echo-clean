@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// DBConfig is a struct to store the database configuration
 type DBConfig struct {
 	Host     string
 	Port     int
@@ -18,6 +19,7 @@ type DBConfig struct {
 	MaxIdle  int
 }
 
+// Config is a struct to store the configuration
 type Config struct {
 	AppName string
 	Port    string
@@ -26,6 +28,7 @@ type Config struct {
 	Db      DBConfig
 }
 
+// LoadConfig is a function to load the .env file
 func LoadConfig() (*Config, error) {
 	err := godotenv.Load()
 	if err != nil {

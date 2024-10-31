@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Author schema.
 type Author struct {
 	ent.Schema
 }
@@ -20,6 +21,7 @@ func (Author) Annotations() []schema.Annotation {
 	}
 }
 
+// Fields of the User.
 func (Author) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id").
