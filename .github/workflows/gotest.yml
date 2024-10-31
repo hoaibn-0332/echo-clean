@@ -3,8 +3,12 @@ name: Go Test
 on:
   push:
     branches: ["main", "chore/upgrade-linter"]
+    paths-ignore:
+      - 'docs/**'
   pull_request:
     branches: ["main"]
+    paths-ignore:
+      - 'docs/**'
 
 jobs:
   build:
