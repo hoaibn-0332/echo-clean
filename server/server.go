@@ -11,10 +11,12 @@ import (
 	"time"
 )
 
+// Server is the struct that holds the Echo instance
 type Server struct {
 	Echo *echo.Echo
 }
 
+// NewServer creates a new instance of the Server struct
 func NewServer(cfg *config.Config) *Server {
 	timeoutContext := time.Duration(cfg.Timeout) * time.Second
 
@@ -37,11 +39,12 @@ func NewServer(cfg *config.Config) *Server {
 	// Initialize service
 	articleService := service.NewArticleService(articleRepository, authorRepository)
 
-	//Initialize handler
+	// Initialize handler
 	articleHandler := handler.NewArticleHandler(articleService)
+	handlers := NewHandlers(articleHandler)
 
-	//Register routes
-	RegisterRoutes(e, articleHandler)
+	// Register routes
+	RegisterRoutes(e, handlers)
 
 	return &Server{
 		Echo: e,

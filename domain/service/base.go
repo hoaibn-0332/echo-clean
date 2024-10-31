@@ -7,9 +7,11 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// BaseService is the base service
 type BaseService struct{}
 
-func (b *BaseService) HandleDbError(err error) []serviceErrors.Error {
+// HandleDbError handles database errors
+func (_ *BaseService) HandleDbError(err error) []serviceErrors.Error {
 	log.Debug().Msgf("Database error: %v", err)
 	if err != nil {
 		var pqErr *pq.Error

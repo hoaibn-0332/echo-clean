@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// ConnectToPostgres connects to the postgres database
 func ConnectToPostgres(config config.DBConfig) (*ent.Client, error) {
 	// Connect to postgres
 	dns := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",

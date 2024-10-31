@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// InitLogger initializes & config the logger
 func InitLogger(config *config.Config) {
 	zerolog.TimeFieldFormat = time.RFC3339
 
