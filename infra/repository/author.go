@@ -8,10 +8,12 @@ import (
 	"time"
 )
 
+// AuthorRepository is the implementation of the AuthorRepository interface
 type AuthorRepository struct {
 	client *ent.Client
 }
 
+// ParserAuthor parses an Author entity to an Author entity
 func ParserAuthor(auth *ent.Author) *entity.Author {
 	if auth == nil {
 		return nil
@@ -77,6 +79,7 @@ func (a AuthorRepository) Delete(ctx context.Context, id int64) error {
 	return a.client.Author.DeleteOneID(id).Exec(ctx)
 }
 
+// NewAuthorRepository creates a new instance of the AuthorRepository
 func NewAuthorRepository(client *ent.Client) repository.AuthorRepository {
 	return &AuthorRepository{
 		client: client,

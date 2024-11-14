@@ -10,10 +10,12 @@ import (
 	"time"
 )
 
+// ArticleRepository is the implementation of the ArticleRepository interface
 type ArticleRepository struct {
 	client *ent.Client
 }
 
+// ParserArticle is a function to parse author entity to author domain
 func ParserArticle(article *ent.Article) *entity.Article {
 	return &entity.Article{
 		ID:        article.ID,
@@ -119,6 +121,7 @@ func (a ArticleRepository) Delete(ctx context.Context, id int64) error {
 	return nil
 }
 
+// NewArticleRepository is a function to parse author entity to author domain
 func NewArticleRepository(client *ent.Client) repository.ArticleRepository {
 	return &ArticleRepository{
 		client: client,

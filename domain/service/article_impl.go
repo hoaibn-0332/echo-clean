@@ -9,12 +9,14 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// ArticleServiceImpl is the implementation of the ArticleService interface
 type ArticleServiceImpl struct {
 	base    BaseService
 	article repository.ArticleRepository
 	author  repository.AuthorRepository
 }
 
+// NewArticleService creates a new instance of the ArticleServiceImpl
 func NewArticleService(article repository.ArticleRepository, author repository.AuthorRepository) ArticleService {
 	return &ArticleServiceImpl{
 		base:    BaseService{},
