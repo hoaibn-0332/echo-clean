@@ -2,7 +2,6 @@ package error
 
 import (
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 )
 
 type Error struct {
@@ -14,7 +13,6 @@ func (err *Error) ToJsonError(other ...Error) string {
 	errs := append(other, *err)
 	jsonData, e := json.Marshal(errs)
 	if e != nil {
-		log.Debug().Msgf("Error when marshalling error: %e", e)
 		return ""
 	}
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"echo-clean/domain/entity"
 	serviceErrors "echo-clean/domain/error"
 	"echo-clean/domain/repository"
@@ -22,8 +23,8 @@ func NewArticleService(article repository.ArticleRepository, author repository.A
 	}
 }
 
-func (a ArticleServiceImpl) Fetch() ([]*entity.Article, []serviceErrors.Error) {
-	article, err := a.article.Fetch()
+func (a ArticleServiceImpl) Fetch(ctx context.Context) ([]*entity.Article, []serviceErrors.Error) {
+	article, err := a.article.Fetch(ctx)
 	if err != nil {
 		return nil, a.base.HandleDbError(err)
 	}
@@ -31,7 +32,7 @@ func (a ArticleServiceImpl) Fetch() ([]*entity.Article, []serviceErrors.Error) {
 	return article, nil
 }
 
-func (a ArticleServiceImpl) Store(article *entity.Article) (*entity.Article, []serviceErrors.Error) {
+func (a ArticleServiceImpl) Store(ctx context.Context, article *entity.Article) (*entity.Article, []serviceErrors.Error) {
 	validate := validator.New()
 	err := validate.Struct(article)
 	log.Debug().Msgf("Validation error: %v", err)
@@ -40,14 +41,14 @@ func (a ArticleServiceImpl) Store(article *entity.Article) (*entity.Article, []s
 		return nil, []serviceErrors.Error{serviceErrors.StatusBadRequestError}
 	}
 
-	authors, err := a.author.Fetch()
+	authors, err := a.author.Fetch(ctx)
 	if err != nil || len(authors) == 0 {
 		return nil, a.base.HandleDbError(err)
 	}
 
 	firstAuthor := authors[0]
 
-	createdArticle, err := a.article.Store(article, firstAuthor.ID)
+	createdArticle, err := a.article.Store(ctx, article, firstAuthor.ID)
 	if err != nil {
 		return nil, a.base.HandleDbError(err)
 	}

@@ -19,7 +19,7 @@ func NewArticleHandler(service service.ArticleService) *ArticleHandler {
 }
 
 func (a *ArticleHandler) FetchArticle(c echo.Context) error {
-	articles, err := a.Service.Fetch()
+	articles, err := a.Service.Fetch(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
@@ -33,7 +33,7 @@ func (a *ArticleHandler) Store(c echo.Context) error {
 		return c.JSON(http.StatusUnsupportedMediaType, []serviceErrors.Error{serviceErrors.UnsupportedMediaTypeError})
 	}
 
-	createdArticle, err := a.Service.Store(article)
+	createdArticle, err := a.Service.Store(c.Request().Context(), article)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}

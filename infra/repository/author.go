@@ -25,13 +25,13 @@ func ParserAuthor(auth *ent.Author) *entity.Author {
 	}
 }
 
-func (a AuthorRepository) Store(name string) (*entity.Author, error) {
+func (a AuthorRepository) Store(ctx context.Context, name string) (*entity.Author, error) {
 	author, err := a.client.Author.
 		Create().
 		SetName(name).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		Save(context.Background())
+		Save(ctx)
 
 	if err != nil {
 		return nil, err
@@ -40,8 +40,8 @@ func (a AuthorRepository) Store(name string) (*entity.Author, error) {
 	return ParserAuthor(author), nil
 }
 
-func (a AuthorRepository) Fetch() ([]*entity.Author, error) {
-	authors, err := a.client.Author.Query().All(context.Background())
+func (a AuthorRepository) Fetch(ctx context.Context) ([]*entity.Author, error) {
+	authors, err := a.client.Author.Query().All(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -53,18 +53,18 @@ func (a AuthorRepository) Fetch() ([]*entity.Author, error) {
 	return result, nil
 }
 
-func (a AuthorRepository) GetByID(id int64) (*entity.Author, error) {
-	author, err := a.client.Author.Get(context.Background(), id)
+func (a AuthorRepository) GetByID(ctx context.Context, id int64) (*entity.Author, error) {
+	author, err := a.client.Author.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	return ParserAuthor(author), nil
 }
 
-func (a AuthorRepository) Update(author *entity.Author) (*entity.Author, error) {
+func (a AuthorRepository) Update(ctx context.Context, author *entity.Author) (*entity.Author, error) {
 	au, err := a.client.Author.UpdateOneID(author.ID).
 		SetName(author.Name).
-		Save(context.Background())
+		Save(ctx)
 
 	if err != nil {
 		return nil, err
@@ -73,8 +73,8 @@ func (a AuthorRepository) Update(author *entity.Author) (*entity.Author, error) 
 	return ParserAuthor(au), nil
 }
 
-func (a AuthorRepository) Delete(id int64) error {
-	return a.client.Author.DeleteOneID(id).Exec(context.Background())
+func (a AuthorRepository) Delete(ctx context.Context, id int64) error {
+	return a.client.Author.DeleteOneID(id).Exec(ctx)
 }
 
 func NewAuthorRepository(client *ent.Client) repository.AuthorRepository {

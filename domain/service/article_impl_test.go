@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"echo-clean/domain/entity"
 	serviceErrors "echo-clean/domain/error"
 	"echo-clean/domain/repository/mocks"
@@ -13,6 +14,7 @@ import (
 func TestFetchArticle(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		mockArticleRepository, _, articleServiceImpl := setup()
+		ctx := context.TODO()
 
 		// Fake new article
 		var mockArticle entity.Article
@@ -23,10 +25,10 @@ func TestFetchArticle(t *testing.T) {
 		mockListArticle = append(mockListArticle, &mockArticle)
 
 		// Given data for Article Repository Mock
-		mockArticleRepository.On("Fetch").Return(mockListArticle, nil)
+		mockArticleRepository.On("Fetch", mock.Anything).Return(mockListArticle, nil)
 
 		// When: Call Fetch function
-		result, e := articleServiceImpl.Fetch()
+		result, e := articleServiceImpl.Fetch(ctx)
 
 		// Then: Assert the result
 		assert.Empty(t, e, nil)
@@ -35,11 +37,13 @@ func TestFetchArticle(t *testing.T) {
 
 	t.Run("error-failed", func(t *testing.T) {
 		mockArticleRepository, _, articleServiceImpl := setup()
+		ctx := context.TODO()
+
 		// Given data for Article Repository Mock
-		mockArticleRepository.On("Fetch").Return(nil, assert.AnError)
+		mockArticleRepository.On("Fetch", mock.Anything).Return(nil, assert.AnError)
 
 		// When: Call Fetch function
-		result, e2 := articleServiceImpl.Fetch()
+		result, e2 := articleServiceImpl.Fetch(ctx)
 
 		// Then: Assert the result
 		assert.Empty(t, result)
@@ -50,6 +54,7 @@ func TestFetchArticle(t *testing.T) {
 func TestStore(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		mockArticleRepository, mockAuthorRepository, articleServiceImpl := setup()
+		ctx := context.TODO()
 
 		// Fake new article
 		var mockArticle entity.Article
@@ -61,11 +66,11 @@ func TestStore(t *testing.T) {
 		mockListAuthor = append(mockListAuthor, &mockAuthor)
 
 		// Given data for Article Repository Mock
-		mockAuthorRepository.On("Fetch").Return(mockListAuthor, nil)
-		mockArticleRepository.On("Store", mock.Anything, mock.Anything).Return(&mockArticle, nil)
+		mockAuthorRepository.On("Fetch", mock.Anything).Return(mockListAuthor, nil)
+		mockArticleRepository.On("Store", mock.Anything, mock.Anything, mock.Anything).Return(&mockArticle, nil)
 
 		// When: Call Store function
-		result, e := articleServiceImpl.Store(&mockArticle)
+		result, e := articleServiceImpl.Store(ctx, &mockArticle)
 
 		// Then: Assert the result
 		assert.Empty(t, e, nil)
@@ -74,6 +79,7 @@ func TestStore(t *testing.T) {
 
 	t.Run("error-validation", func(t *testing.T) {
 		_, _, articleServiceImpl := setup()
+		ctx := context.TODO()
 
 		// Fake new article
 		mockArticle := entity.Article{
@@ -82,7 +88,7 @@ func TestStore(t *testing.T) {
 		}
 
 		// When: Call Store function
-		result, e := articleServiceImpl.Store(&mockArticle)
+		result, e := articleServiceImpl.Store(ctx, &mockArticle)
 
 		// Then: Assert the result
 		assert.Empty(t, result)
@@ -91,6 +97,7 @@ func TestStore(t *testing.T) {
 
 	t.Run("error-failed", func(t *testing.T) {
 		mockArticleRepository, mockAuthorRepository, articleServiceImpl := setup()
+		ctx := context.TODO()
 
 		// Fake new article
 		var mockArticle entity.Article
@@ -102,11 +109,11 @@ func TestStore(t *testing.T) {
 		mockListAuthor = append(mockListAuthor, &mockAuthor)
 
 		// Given data for Article Repository Mock
-		mockAuthorRepository.On("Fetch").Return(mockListAuthor, nil)
-		mockArticleRepository.On("Store", mock.Anything, mock.Anything).Return(nil, assert.AnError)
+		mockAuthorRepository.On("Fetch", mock.Anything).Return(mockListAuthor, nil)
+		mockArticleRepository.On("Store", mock.Anything, mock.Anything, mock.Anything).Return(nil, assert.AnError)
 
 		// When: Call Store function
-		result, e := articleServiceImpl.Store(&mockArticle)
+		result, e := articleServiceImpl.Store(ctx, &mockArticle)
 
 		// Then: Assert the result
 		assert.Empty(t, result)
