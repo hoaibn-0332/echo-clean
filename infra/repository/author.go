@@ -27,7 +27,11 @@ func ParserAuthor(auth *ent.Author) *entity.Author {
 	}
 }
 
-func (a AuthorRepository) Store(ctx context.Context, name string) (*entity.Author, error) {
+// Store stores an author
+func (a AuthorRepository) Store(
+	ctx context.Context,
+	name string,
+) (*entity.Author, error) {
 	author, err := a.client.Author.
 		Create().
 		SetName(name).
@@ -42,7 +46,10 @@ func (a AuthorRepository) Store(ctx context.Context, name string) (*entity.Autho
 	return ParserAuthor(author), nil
 }
 
-func (a AuthorRepository) Fetch(ctx context.Context) ([]*entity.Author, error) {
+// Fetch fetches all authors
+func (a AuthorRepository) Fetch(
+	ctx context.Context,
+) ([]*entity.Author, error) {
 	authors, err := a.client.Author.Query().All(ctx)
 	if err != nil {
 		return nil, err
@@ -55,7 +62,11 @@ func (a AuthorRepository) Fetch(ctx context.Context) ([]*entity.Author, error) {
 	return result, nil
 }
 
-func (a AuthorRepository) GetByID(ctx context.Context, id int64) (*entity.Author, error) {
+// GetByID gets an author by ID
+func (a AuthorRepository) GetByID(
+	ctx context.Context,
+	id int64,
+) (*entity.Author, error) {
 	author, err := a.client.Author.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -63,7 +74,11 @@ func (a AuthorRepository) GetByID(ctx context.Context, id int64) (*entity.Author
 	return ParserAuthor(author), nil
 }
 
-func (a AuthorRepository) Update(ctx context.Context, author *entity.Author) (*entity.Author, error) {
+// Update updates an author
+func (a AuthorRepository) Update(
+	ctx context.Context,
+	author *entity.Author,
+) (*entity.Author, error) {
 	au, err := a.client.Author.UpdateOneID(author.ID).
 		SetName(author.Name).
 		Save(ctx)
@@ -75,7 +90,10 @@ func (a AuthorRepository) Update(ctx context.Context, author *entity.Author) (*e
 	return ParserAuthor(au), nil
 }
 
-func (a AuthorRepository) Delete(ctx context.Context, id int64) error {
+// Delete deletes an author
+func (a AuthorRepository) Delete(
+	ctx context.Context, id int64,
+) error {
 	return a.client.Author.DeleteOneID(id).Exec(ctx)
 }
 

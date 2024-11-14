@@ -27,7 +27,12 @@ func ParserArticle(article *ent.Article) *entity.Article {
 	}
 }
 
-func (a ArticleRepository) Store(ctx context.Context, article *entity.Article, authorId int64) (*entity.Article, error) {
+// Store stores an article
+func (a ArticleRepository) Store(
+	ctx context.Context,
+	article *entity.Article,
+	authorId int64,
+) (*entity.Article, error) {
 	ar, err := a.client.Article.Create().
 		SetTitle(article.Title).
 		SetContent(article.Content).
@@ -52,7 +57,10 @@ func (a ArticleRepository) Store(ctx context.Context, article *entity.Article, a
 	return ParserArticle(fullAr), nil
 }
 
-func (a ArticleRepository) Fetch(ctx context.Context) ([]*entity.Article, error) {
+// Fetch fetches all articles
+func (a ArticleRepository) Fetch(
+	ctx context.Context,
+) ([]*entity.Article, error) {
 	articles, err := a.client.Article.Query().
 		WithAuthor().
 		All(ctx)
@@ -71,7 +79,11 @@ func (a ArticleRepository) Fetch(ctx context.Context) ([]*entity.Article, error)
 	return result, nil
 }
 
-func (a ArticleRepository) GetByID(ctx context.Context, id int64) (*entity.Article, error) {
+// GetByID gets an article by ID
+func (a ArticleRepository) GetByID(
+	ctx context.Context,
+	id int64,
+) (*entity.Article, error) {
 	article, err := a.client.Article.Query().
 		Where(art.IDEQ(id)).
 		WithAuthor().
@@ -84,7 +96,11 @@ func (a ArticleRepository) GetByID(ctx context.Context, id int64) (*entity.Artic
 	return ParserArticle(article), nil
 }
 
-func (a ArticleRepository) GetByTitle(ctx context.Context, title string) (*entity.Article, error) {
+// GetByTitle gets an article by title
+func (a ArticleRepository) GetByTitle(
+	ctx context.Context,
+	title string,
+) (*entity.Article, error) {
 	article, err := a.client.Article.Query().
 		Where(art.TitleEQ(title)).
 		WithAuthor().
@@ -97,7 +113,11 @@ func (a ArticleRepository) GetByTitle(ctx context.Context, title string) (*entit
 	return ParserArticle(article), nil
 }
 
-func (a ArticleRepository) Update(ctx context.Context, article *entity.Article) (*entity.Article, error) {
+// Update updates an article
+func (a ArticleRepository) Update(
+	ctx context.Context,
+	article *entity.Article,
+) (*entity.Article, error) {
 	ar, err := a.client.Article.UpdateOneID(article.ID).
 		SetTitle(article.Title).
 		SetContent(article.Content).
@@ -110,7 +130,11 @@ func (a ArticleRepository) Update(ctx context.Context, article *entity.Article) 
 	return ParserArticle(ar), nil
 }
 
-func (a ArticleRepository) Delete(ctx context.Context, id int64) error {
+// Delete deletes an article
+func (a ArticleRepository) Delete(
+	ctx context.Context,
+	id int64,
+) error {
 	err := a.client.Article.DeleteOneID(id).
 		Exec(ctx)
 

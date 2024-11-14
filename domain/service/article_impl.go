@@ -17,7 +17,10 @@ type ArticleServiceImpl struct {
 }
 
 // NewArticleService creates a new instance of the ArticleServiceImpl
-func NewArticleService(article repository.ArticleRepository, author repository.AuthorRepository) ArticleService {
+func NewArticleService(
+	article repository.ArticleRepository,
+	author repository.AuthorRepository,
+) ArticleService {
 	return &ArticleServiceImpl{
 		base:    BaseService{},
 		article: article,
@@ -25,7 +28,10 @@ func NewArticleService(article repository.ArticleRepository, author repository.A
 	}
 }
 
-func (a ArticleServiceImpl) Fetch(ctx context.Context) ([]*entity.Article, []serviceErrors.Error) {
+// Fetch fetches all articles
+func (a ArticleServiceImpl) Fetch(
+	ctx context.Context,
+) ([]*entity.Article, []serviceErrors.Error) {
 	article, err := a.article.Fetch(ctx)
 	if err != nil {
 		return nil, a.base.HandleDbError(err)
@@ -34,7 +40,11 @@ func (a ArticleServiceImpl) Fetch(ctx context.Context) ([]*entity.Article, []ser
 	return article, nil
 }
 
-func (a ArticleServiceImpl) Store(ctx context.Context, article *entity.Article) (*entity.Article, []serviceErrors.Error) {
+// Store stores an article
+func (a ArticleServiceImpl) Store(
+	ctx context.Context,
+	article *entity.Article,
+) (*entity.Article, []serviceErrors.Error) {
 	validate := validator.New()
 	err := validate.Struct(article)
 	log.Debug().Msgf("Validation error: %v", err)
