@@ -3,6 +3,7 @@
 package mocks
 
 import (
+	context "context"
 	entity "echo-clean/domain/entity"
 
 	mock "github.com/stretchr/testify/mock"
@@ -21,17 +22,17 @@ func (_m *AuthorRepository) EXPECT() *AuthorRepository_Expecter {
 	return &AuthorRepository_Expecter{mock: &_m.Mock}
 }
 
-// Delete provides a mock function with given fields: id
-func (_m *AuthorRepository) Delete(id int64) error {
-	ret := _m.Called(id)
+// Delete provides a mock function with given fields: ctx, id
+func (_m *AuthorRepository) Delete(ctx context.Context, id int64) error {
+	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(int64) error); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int64) error); ok {
+		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -45,14 +46,15 @@ type AuthorRepository_Delete_Call struct {
 }
 
 // Delete is a helper method to define mock.On call
+//   - ctx context.Context
 //   - id int64
-func (_e *AuthorRepository_Expecter) Delete(id interface{}) *AuthorRepository_Delete_Call {
-	return &AuthorRepository_Delete_Call{Call: _e.mock.On("Delete", id)}
+func (_e *AuthorRepository_Expecter) Delete(ctx interface{}, id interface{}) *AuthorRepository_Delete_Call {
+	return &AuthorRepository_Delete_Call{Call: _e.mock.On("Delete", ctx, id)}
 }
 
-func (_c *AuthorRepository_Delete_Call) Run(run func(id int64)) *AuthorRepository_Delete_Call {
+func (_c *AuthorRepository_Delete_Call) Run(run func(ctx context.Context, id int64)) *AuthorRepository_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(int64))
+		run(args[0].(context.Context), args[1].(int64))
 	})
 	return _c
 }
@@ -62,14 +64,14 @@ func (_c *AuthorRepository_Delete_Call) Return(_a0 error) *AuthorRepository_Dele
 	return _c
 }
 
-func (_c *AuthorRepository_Delete_Call) RunAndReturn(run func(int64) error) *AuthorRepository_Delete_Call {
+func (_c *AuthorRepository_Delete_Call) RunAndReturn(run func(context.Context, int64) error) *AuthorRepository_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Fetch provides a mock function with given fields:
-func (_m *AuthorRepository) Fetch() ([]*entity.Author, error) {
-	ret := _m.Called()
+// Fetch provides a mock function with given fields: ctx
+func (_m *AuthorRepository) Fetch(ctx context.Context) ([]*entity.Author, error) {
+	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Fetch")
@@ -77,19 +79,19 @@ func (_m *AuthorRepository) Fetch() ([]*entity.Author, error) {
 
 	var r0 []*entity.Author
 	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]*entity.Author, error)); ok {
-		return rf()
+	if rf, ok := ret.Get(0).(func(context.Context) ([]*entity.Author, error)); ok {
+		return rf(ctx)
 	}
-	if rf, ok := ret.Get(0).(func() []*entity.Author); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(context.Context) []*entity.Author); ok {
+		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*entity.Author)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -103,13 +105,14 @@ type AuthorRepository_Fetch_Call struct {
 }
 
 // Fetch is a helper method to define mock.On call
-func (_e *AuthorRepository_Expecter) Fetch() *AuthorRepository_Fetch_Call {
-	return &AuthorRepository_Fetch_Call{Call: _e.mock.On("Fetch")}
+//   - ctx context.Context
+func (_e *AuthorRepository_Expecter) Fetch(ctx interface{}) *AuthorRepository_Fetch_Call {
+	return &AuthorRepository_Fetch_Call{Call: _e.mock.On("Fetch", ctx)}
 }
 
-func (_c *AuthorRepository_Fetch_Call) Run(run func()) *AuthorRepository_Fetch_Call {
+func (_c *AuthorRepository_Fetch_Call) Run(run func(ctx context.Context)) *AuthorRepository_Fetch_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		run(args[0].(context.Context))
 	})
 	return _c
 }
@@ -119,14 +122,14 @@ func (_c *AuthorRepository_Fetch_Call) Return(_a0 []*entity.Author, _a1 error) *
 	return _c
 }
 
-func (_c *AuthorRepository_Fetch_Call) RunAndReturn(run func() ([]*entity.Author, error)) *AuthorRepository_Fetch_Call {
+func (_c *AuthorRepository_Fetch_Call) RunAndReturn(run func(context.Context) ([]*entity.Author, error)) *AuthorRepository_Fetch_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetByID provides a mock function with given fields: id
-func (_m *AuthorRepository) GetByID(id int64) (*entity.Author, error) {
-	ret := _m.Called(id)
+// GetByID provides a mock function with given fields: ctx, id
+func (_m *AuthorRepository) GetByID(ctx context.Context, id int64) (*entity.Author, error) {
+	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetByID")
@@ -134,19 +137,19 @@ func (_m *AuthorRepository) GetByID(id int64) (*entity.Author, error) {
 
 	var r0 *entity.Author
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int64) (*entity.Author, error)); ok {
-		return rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (*entity.Author, error)); ok {
+		return rf(ctx, id)
 	}
-	if rf, ok := ret.Get(0).(func(int64) *entity.Author); ok {
-		r0 = rf(id)
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *entity.Author); ok {
+		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.Author)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(int64) error); ok {
-		r1 = rf(id)
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -160,14 +163,15 @@ type AuthorRepository_GetByID_Call struct {
 }
 
 // GetByID is a helper method to define mock.On call
+//   - ctx context.Context
 //   - id int64
-func (_e *AuthorRepository_Expecter) GetByID(id interface{}) *AuthorRepository_GetByID_Call {
-	return &AuthorRepository_GetByID_Call{Call: _e.mock.On("GetByID", id)}
+func (_e *AuthorRepository_Expecter) GetByID(ctx interface{}, id interface{}) *AuthorRepository_GetByID_Call {
+	return &AuthorRepository_GetByID_Call{Call: _e.mock.On("GetByID", ctx, id)}
 }
 
-func (_c *AuthorRepository_GetByID_Call) Run(run func(id int64)) *AuthorRepository_GetByID_Call {
+func (_c *AuthorRepository_GetByID_Call) Run(run func(ctx context.Context, id int64)) *AuthorRepository_GetByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(int64))
+		run(args[0].(context.Context), args[1].(int64))
 	})
 	return _c
 }
@@ -177,14 +181,14 @@ func (_c *AuthorRepository_GetByID_Call) Return(_a0 *entity.Author, _a1 error) *
 	return _c
 }
 
-func (_c *AuthorRepository_GetByID_Call) RunAndReturn(run func(int64) (*entity.Author, error)) *AuthorRepository_GetByID_Call {
+func (_c *AuthorRepository_GetByID_Call) RunAndReturn(run func(context.Context, int64) (*entity.Author, error)) *AuthorRepository_GetByID_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Store provides a mock function with given fields: name
-func (_m *AuthorRepository) Store(name string) (*entity.Author, error) {
-	ret := _m.Called(name)
+// Store provides a mock function with given fields: ctx, name
+func (_m *AuthorRepository) Store(ctx context.Context, name string) (*entity.Author, error) {
+	ret := _m.Called(ctx, name)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Store")
@@ -192,19 +196,19 @@ func (_m *AuthorRepository) Store(name string) (*entity.Author, error) {
 
 	var r0 *entity.Author
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*entity.Author, error)); ok {
-		return rf(name)
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*entity.Author, error)); ok {
+		return rf(ctx, name)
 	}
-	if rf, ok := ret.Get(0).(func(string) *entity.Author); ok {
-		r0 = rf(name)
+	if rf, ok := ret.Get(0).(func(context.Context, string) *entity.Author); ok {
+		r0 = rf(ctx, name)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.Author)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(name)
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, name)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -218,14 +222,15 @@ type AuthorRepository_Store_Call struct {
 }
 
 // Store is a helper method to define mock.On call
+//   - ctx context.Context
 //   - name string
-func (_e *AuthorRepository_Expecter) Store(name interface{}) *AuthorRepository_Store_Call {
-	return &AuthorRepository_Store_Call{Call: _e.mock.On("Store", name)}
+func (_e *AuthorRepository_Expecter) Store(ctx interface{}, name interface{}) *AuthorRepository_Store_Call {
+	return &AuthorRepository_Store_Call{Call: _e.mock.On("Store", ctx, name)}
 }
 
-func (_c *AuthorRepository_Store_Call) Run(run func(name string)) *AuthorRepository_Store_Call {
+func (_c *AuthorRepository_Store_Call) Run(run func(ctx context.Context, name string)) *AuthorRepository_Store_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
@@ -235,14 +240,14 @@ func (_c *AuthorRepository_Store_Call) Return(_a0 *entity.Author, _a1 error) *Au
 	return _c
 }
 
-func (_c *AuthorRepository_Store_Call) RunAndReturn(run func(string) (*entity.Author, error)) *AuthorRepository_Store_Call {
+func (_c *AuthorRepository_Store_Call) RunAndReturn(run func(context.Context, string) (*entity.Author, error)) *AuthorRepository_Store_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Update provides a mock function with given fields: author
-func (_m *AuthorRepository) Update(author *entity.Author) (*entity.Author, error) {
-	ret := _m.Called(author)
+// Update provides a mock function with given fields: ctx, author
+func (_m *AuthorRepository) Update(ctx context.Context, author *entity.Author) (*entity.Author, error) {
+	ret := _m.Called(ctx, author)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
@@ -250,19 +255,19 @@ func (_m *AuthorRepository) Update(author *entity.Author) (*entity.Author, error
 
 	var r0 *entity.Author
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*entity.Author) (*entity.Author, error)); ok {
-		return rf(author)
+	if rf, ok := ret.Get(0).(func(context.Context, *entity.Author) (*entity.Author, error)); ok {
+		return rf(ctx, author)
 	}
-	if rf, ok := ret.Get(0).(func(*entity.Author) *entity.Author); ok {
-		r0 = rf(author)
+	if rf, ok := ret.Get(0).(func(context.Context, *entity.Author) *entity.Author); ok {
+		r0 = rf(ctx, author)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.Author)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*entity.Author) error); ok {
-		r1 = rf(author)
+	if rf, ok := ret.Get(1).(func(context.Context, *entity.Author) error); ok {
+		r1 = rf(ctx, author)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -276,14 +281,15 @@ type AuthorRepository_Update_Call struct {
 }
 
 // Update is a helper method to define mock.On call
+//   - ctx context.Context
 //   - author *entity.Author
-func (_e *AuthorRepository_Expecter) Update(author interface{}) *AuthorRepository_Update_Call {
-	return &AuthorRepository_Update_Call{Call: _e.mock.On("Update", author)}
+func (_e *AuthorRepository_Expecter) Update(ctx interface{}, author interface{}) *AuthorRepository_Update_Call {
+	return &AuthorRepository_Update_Call{Call: _e.mock.On("Update", ctx, author)}
 }
 
-func (_c *AuthorRepository_Update_Call) Run(run func(author *entity.Author)) *AuthorRepository_Update_Call {
+func (_c *AuthorRepository_Update_Call) Run(run func(ctx context.Context, author *entity.Author)) *AuthorRepository_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*entity.Author))
+		run(args[0].(context.Context), args[1].(*entity.Author))
 	})
 	return _c
 }
@@ -293,7 +299,7 @@ func (_c *AuthorRepository_Update_Call) Return(_a0 *entity.Author, _a1 error) *A
 	return _c
 }
 
-func (_c *AuthorRepository_Update_Call) RunAndReturn(run func(*entity.Author) (*entity.Author, error)) *AuthorRepository_Update_Call {
+func (_c *AuthorRepository_Update_Call) RunAndReturn(run func(context.Context, *entity.Author) (*entity.Author, error)) *AuthorRepository_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -27,7 +27,7 @@ func TestFetchArticle(t *testing.T) {
 		fakeListArticle = append(fakeListArticle, &fakeArticle)
 
 		// Given data for Article Service Mock
-		mockArticleService.On("Fetch").Return(fakeListArticle, nil)
+		mockArticleService.On("Fetch", mock.Anything).Return(fakeListArticle, nil)
 
 		// Construct the handler
 		articleHandler := NewArticleHandler(mockArticleService)
@@ -53,7 +53,7 @@ func TestFetchArticle(t *testing.T) {
 		fakeError := []serviceErrors.Error{serviceErrors.E10001}
 
 		// Given data for Article Service Mock
-		mockArticleService.On("Fetch").Return(nil, fakeError)
+		mockArticleService.On("Fetch", mock.Anything).Return(nil, fakeError)
 
 		// Construct the handler
 		articleHandler := NewArticleHandler(mockArticleService)
@@ -83,7 +83,7 @@ func TestStoreArticle(t *testing.T) {
 		_ = faker.FakeData(&fakeArticle)
 
 		// Given data for Article Service Mock
-		mockArticleService.On("Store", mock.Anything).Return(&fakeArticle, nil)
+		mockArticleService.On("Store", mock.Anything, mock.Anything).Return(&fakeArticle, nil)
 
 		// Construct the handler
 		articleHandler := NewArticleHandler(mockArticleService)
@@ -136,7 +136,7 @@ func TestStoreArticle(t *testing.T) {
 		fakeError := []serviceErrors.Error{serviceErrors.E10001}
 
 		// Given data for Article Service Mock
-		mockArticleService.On("Store", mock.Anything).Return(nil, fakeError)
+		mockArticleService.On("Store", mock.Anything, mock.Anything).Return(nil, fakeError)
 
 		// Construct the handler
 		articleHandler := NewArticleHandler(mockArticleService)

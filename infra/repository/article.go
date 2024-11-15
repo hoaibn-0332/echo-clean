@@ -27,15 +27,19 @@ func ParserArticle(article *ent.Article) *entity.Article {
 	}
 }
 
-// Store is a function to parse author entity to author domain
-func (a ArticleRepository) Store(article *entity.Article, authorId int64) (*entity.Article, error) {
+// Store stores an article
+func (a ArticleRepository) Store(
+	ctx context.Context,
+	article *entity.Article,
+	authorId int64,
+) (*entity.Article, error) {
 	ar, err := a.client.Article.Create().
 		SetTitle(article.Title).
 		SetContent(article.Content).
 		SetAuthorID(authorId).
 		SetCreatedAt(time.Now()).
 		SetUpdatedAt(time.Now()).
-		Save(context.Background())
+		Save(ctx)
 
 	if err != nil {
 		return nil, err
@@ -44,7 +48,7 @@ func (a ArticleRepository) Store(article *entity.Article, authorId int64) (*enti
 	fullAr, err := a.client.Article.Query().
 		Where(art.IDEQ(ar.ID)).
 		WithAuthor().
-		Only(context.Background())
+		Only(ctx)
 
 	if err != nil {
 		return nil, err
@@ -53,11 +57,13 @@ func (a ArticleRepository) Store(article *entity.Article, authorId int64) (*enti
 	return ParserArticle(fullAr), nil
 }
 
-// Fetch is a function to parse author entity to author domain
-func (a ArticleRepository) Fetch() ([]*entity.Article, error) {
+// Fetch fetches all articles
+func (a ArticleRepository) Fetch(
+	ctx context.Context,
+) ([]*entity.Article, error) {
 	articles, err := a.client.Article.Query().
 		WithAuthor().
-		All(context.Background())
+		All(ctx)
 
 	log.Debug().Msgf("Query error: %v", err)
 
@@ -73,12 +79,15 @@ func (a ArticleRepository) Fetch() ([]*entity.Article, error) {
 	return result, nil
 }
 
-// GetByID is a function to parse author entity to author domain
-func (a ArticleRepository) GetByID(id int64) (*entity.Article, error) {
+// GetByID gets an article by ID
+func (a ArticleRepository) GetByID(
+	ctx context.Context,
+	id int64,
+) (*entity.Article, error) {
 	article, err := a.client.Article.Query().
 		Where(art.IDEQ(id)).
 		WithAuthor().
-		Only(context.Background())
+		Only(ctx)
 
 	if err != nil {
 		return nil, err
@@ -87,12 +96,15 @@ func (a ArticleRepository) GetByID(id int64) (*entity.Article, error) {
 	return ParserArticle(article), nil
 }
 
-// GetByTitle is a function to parse author entity to author domain
-func (a ArticleRepository) GetByTitle(title string) (*entity.Article, error) {
+// GetByTitle gets an article by title
+func (a ArticleRepository) GetByTitle(
+	ctx context.Context,
+	title string,
+) (*entity.Article, error) {
 	article, err := a.client.Article.Query().
 		Where(art.TitleEQ(title)).
 		WithAuthor().
-		Only(context.Background())
+		Only(ctx)
 
 	if err != nil {
 		return nil, err
@@ -101,12 +113,15 @@ func (a ArticleRepository) GetByTitle(title string) (*entity.Article, error) {
 	return ParserArticle(article), nil
 }
 
-// Update is a function to parse author entity to author domain
-func (a ArticleRepository) Update(article *entity.Article) (*entity.Article, error) {
+// Update updates an article
+func (a ArticleRepository) Update(
+	ctx context.Context,
+	article *entity.Article,
+) (*entity.Article, error) {
 	ar, err := a.client.Article.UpdateOneID(article.ID).
 		SetTitle(article.Title).
 		SetContent(article.Content).
-		Save(context.Background())
+		Save(ctx)
 
 	if err != nil {
 		return nil, err
@@ -115,10 +130,13 @@ func (a ArticleRepository) Update(article *entity.Article) (*entity.Article, err
 	return ParserArticle(ar), nil
 }
 
-// Delete is a function to parse author entity to author domain
-func (a ArticleRepository) Delete(id int64) error {
+// Delete deletes an article
+func (a ArticleRepository) Delete(
+	ctx context.Context,
+	id int64,
+) error {
 	err := a.client.Article.DeleteOneID(id).
-		Exec(context.Background())
+		Exec(ctx)
 
 	if err != nil {
 		return err

@@ -3,6 +3,7 @@
 package mocks
 
 import (
+	context "context"
 	entity "echo-clean/domain/entity"
 	error "echo-clean/domain/error"
 
@@ -22,9 +23,9 @@ func (_m *ArticleService) EXPECT() *ArticleService_Expecter {
 	return &ArticleService_Expecter{mock: &_m.Mock}
 }
 
-// Fetch provides a mock function with given fields:
-func (_m *ArticleService) Fetch() ([]*entity.Article, []error.Error) {
-	ret := _m.Called()
+// Fetch provides a mock function with given fields: ctx
+func (_m *ArticleService) Fetch(ctx context.Context) ([]*entity.Article, []error.Error) {
+	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Fetch")
@@ -32,19 +33,19 @@ func (_m *ArticleService) Fetch() ([]*entity.Article, []error.Error) {
 
 	var r0 []*entity.Article
 	var r1 []error.Error
-	if rf, ok := ret.Get(0).(func() ([]*entity.Article, []error.Error)); ok {
-		return rf()
+	if rf, ok := ret.Get(0).(func(context.Context) ([]*entity.Article, []error.Error)); ok {
+		return rf(ctx)
 	}
-	if rf, ok := ret.Get(0).(func() []*entity.Article); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(context.Context) []*entity.Article); ok {
+		r0 = rf(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*entity.Article)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func() []error.Error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(context.Context) []error.Error); ok {
+		r1 = rf(ctx)
 	} else {
 		if ret.Get(1) != nil {
 			r1 = ret.Get(1).([]error.Error)
@@ -60,13 +61,14 @@ type ArticleService_Fetch_Call struct {
 }
 
 // Fetch is a helper method to define mock.On call
-func (_e *ArticleService_Expecter) Fetch() *ArticleService_Fetch_Call {
-	return &ArticleService_Fetch_Call{Call: _e.mock.On("Fetch")}
+//   - ctx context.Context
+func (_e *ArticleService_Expecter) Fetch(ctx interface{}) *ArticleService_Fetch_Call {
+	return &ArticleService_Fetch_Call{Call: _e.mock.On("Fetch", ctx)}
 }
 
-func (_c *ArticleService_Fetch_Call) Run(run func()) *ArticleService_Fetch_Call {
+func (_c *ArticleService_Fetch_Call) Run(run func(ctx context.Context)) *ArticleService_Fetch_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run()
+		run(args[0].(context.Context))
 	})
 	return _c
 }
@@ -76,14 +78,14 @@ func (_c *ArticleService_Fetch_Call) Return(_a0 []*entity.Article, _a1 []error.E
 	return _c
 }
 
-func (_c *ArticleService_Fetch_Call) RunAndReturn(run func() ([]*entity.Article, []error.Error)) *ArticleService_Fetch_Call {
+func (_c *ArticleService_Fetch_Call) RunAndReturn(run func(context.Context) ([]*entity.Article, []error.Error)) *ArticleService_Fetch_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Store provides a mock function with given fields: article
-func (_m *ArticleService) Store(article *entity.Article) (*entity.Article, []error.Error) {
-	ret := _m.Called(article)
+// Store provides a mock function with given fields: ctx, article
+func (_m *ArticleService) Store(ctx context.Context, article *entity.Article) (*entity.Article, []error.Error) {
+	ret := _m.Called(ctx, article)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Store")
@@ -91,19 +93,19 @@ func (_m *ArticleService) Store(article *entity.Article) (*entity.Article, []err
 
 	var r0 *entity.Article
 	var r1 []error.Error
-	if rf, ok := ret.Get(0).(func(*entity.Article) (*entity.Article, []error.Error)); ok {
-		return rf(article)
+	if rf, ok := ret.Get(0).(func(context.Context, *entity.Article) (*entity.Article, []error.Error)); ok {
+		return rf(ctx, article)
 	}
-	if rf, ok := ret.Get(0).(func(*entity.Article) *entity.Article); ok {
-		r0 = rf(article)
+	if rf, ok := ret.Get(0).(func(context.Context, *entity.Article) *entity.Article); ok {
+		r0 = rf(ctx, article)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.Article)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*entity.Article) []error.Error); ok {
-		r1 = rf(article)
+	if rf, ok := ret.Get(1).(func(context.Context, *entity.Article) []error.Error); ok {
+		r1 = rf(ctx, article)
 	} else {
 		if ret.Get(1) != nil {
 			r1 = ret.Get(1).([]error.Error)
@@ -119,14 +121,15 @@ type ArticleService_Store_Call struct {
 }
 
 // Store is a helper method to define mock.On call
+//   - ctx context.Context
 //   - article *entity.Article
-func (_e *ArticleService_Expecter) Store(article interface{}) *ArticleService_Store_Call {
-	return &ArticleService_Store_Call{Call: _e.mock.On("Store", article)}
+func (_e *ArticleService_Expecter) Store(ctx interface{}, article interface{}) *ArticleService_Store_Call {
+	return &ArticleService_Store_Call{Call: _e.mock.On("Store", ctx, article)}
 }
 
-func (_c *ArticleService_Store_Call) Run(run func(article *entity.Article)) *ArticleService_Store_Call {
+func (_c *ArticleService_Store_Call) Run(run func(ctx context.Context, article *entity.Article)) *ArticleService_Store_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*entity.Article))
+		run(args[0].(context.Context), args[1].(*entity.Article))
 	})
 	return _c
 }
@@ -136,7 +139,7 @@ func (_c *ArticleService_Store_Call) Return(_a0 *entity.Article, _a1 []error.Err
 	return _c
 }
 
-func (_c *ArticleService_Store_Call) RunAndReturn(run func(*entity.Article) (*entity.Article, []error.Error)) *ArticleService_Store_Call {
+func (_c *ArticleService_Store_Call) RunAndReturn(run func(context.Context, *entity.Article) (*entity.Article, []error.Error)) *ArticleService_Store_Call {
 	_c.Call.Return(run)
 	return _c
 }
